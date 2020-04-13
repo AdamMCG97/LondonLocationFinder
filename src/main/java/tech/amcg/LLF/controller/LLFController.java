@@ -1,16 +1,13 @@
-package tech.amcg.springbootpractice.controller;
+package tech.amcg.LLF.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import tech.amcg.springbootpractice.objects.LLFPerson;
-import tech.amcg.springbootpractice.objects.LLFQuery;
-import tech.amcg.springbootpractice.objects.LLFResultset;
-import tech.amcg.springbootpractice.service.LLFService;
-
-import java.util.Arrays;
+import tech.amcg.LLF.objects.LLFQuery;
+import tech.amcg.LLF.objects.LLFResultset;
+import tech.amcg.LLF.service.LLFService;
 
 @RestController
 public class LLFController {

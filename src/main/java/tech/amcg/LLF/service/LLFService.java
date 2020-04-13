@@ -1,4 +1,4 @@
-package tech.amcg.springbootpractice.service;
+package tech.amcg.LLF.service;
 
 import com.postcode.io.initializers.PostcodeLookup;
 import io.vavr.Tuple;
@@ -8,10 +8,10 @@ import org.json.JSONObject;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import tech.amcg.springbootpractice.objects.LLFLocation;
-import tech.amcg.springbootpractice.objects.LLFPerson;
-import tech.amcg.springbootpractice.objects.LLFQuery;
-import tech.amcg.springbootpractice.objects.LLFResultset;
+import tech.amcg.LLF.objects.LLFLocation;
+import tech.amcg.LLF.objects.LLFPerson;
+import tech.amcg.LLF.objects.LLFQuery;
+import tech.amcg.LLF.objects.LLFResultset;
 
 import java.util.Collections;
 import java.util.List;

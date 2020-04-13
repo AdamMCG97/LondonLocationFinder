@@ -1,4 +1,4 @@
-package tech.amcg.springbootpractice.objects;
+package tech.amcg.LLF.objects;
 
 import java.util.List;
 

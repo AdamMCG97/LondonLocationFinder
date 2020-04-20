@@ -1,4 +1,4 @@
-package tech.amcg.LLF;
+package tech.amcg.llf;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

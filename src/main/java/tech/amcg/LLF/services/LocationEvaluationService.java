@@ -11,6 +11,5 @@ public class LocationEvaluationService {
     public void evaluate(Query query){
 
 
-
     }
 }

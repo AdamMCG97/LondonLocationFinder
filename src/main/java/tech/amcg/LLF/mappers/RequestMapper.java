@@ -1,8 +1,8 @@
 package tech.amcg.llf.mappers;
 
 public class RequestMapper {
-    private static final String hereApiKey = "nclHFYxJ5vQjVVBLnq1iOyUHQvVJ39ZGyq2MpyZ4z9U";
-    private static final String transportApiKey = "8a5dcfce3f5a3d38873f95eca9432ab9";
+    private static final String hereApiKey = System.getenv("HERE_API_KEY");
+    private static final String transportApiKey = System.getenv("TRANSPORT_API_KEY");
 
     public RequestMapper(){}
 

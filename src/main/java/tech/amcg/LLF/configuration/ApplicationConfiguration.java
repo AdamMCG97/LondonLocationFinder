@@ -1,12 +1,9 @@
 package tech.amcg.llf.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import tech.amcg.llf.mappers.RequestMapper;
-import tech.amcg.llf.services.LocationEvaluationService;
-import tech.amcg.llf.services.NearbyStationsService;
-import tech.amcg.llf.services.QueryProcessorService;
+import tech.amcg.llf.mapper.RequestMapper;
+
 
 @Configuration
 public class ApplicationConfiguration {

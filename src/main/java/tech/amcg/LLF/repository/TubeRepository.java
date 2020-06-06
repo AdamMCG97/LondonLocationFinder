@@ -4,15 +4,16 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import tech.amcg.llf.domain.neo4j.AllStationsResult;
+import tech.amcg.llf.domain.neo4j.SingleJourneyResult;
 import tech.amcg.llf.domain.neo4j.Tube;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public interface TubeRepository extends Neo4jRepository<Tube, Long> {
 
-    @Query("MATCH (n:Station {name: {name}}})\n" +
+    @Query("MATCH (n:Station {name: $name})\n" +
             "CALL gds.alpha.shortestPath.deltaStepping.stream({\n" +
             "  nodeProjection: 'Station',\n" +
             "  relationshipProjection: {\n" +
@@ -27,9 +28,9 @@ public interface TubeRepository extends Neo4jRepository<Tube, Long> {
             "})\n" +
             "YIELD nodeId, distance\n" +
             "RETURN gds.util.asNode(nodeId).name AS destination, distance")
-    Map<String, Integer> distanceToAllStations(@Param("name") String name);
+    List<AllStationsResult> distanceToAllStations(@Param("name") String name);
 
-    @Query("MATCH (start:Station {name: {firstStation}}}), (end:Station {name: {secondStation}}})\n" +
+    @Query("MATCH (start:Station {name: $firstStation}), (end:Station {name: $secondStation})\n" +
             "CALL gds.alpha.shortestPath.stream({\n" +
             "  nodeProjection: 'Station',\n" +
             "  relationshipProjection: {\n" +
@@ -40,11 +41,11 @@ public interface TubeRepository extends Neo4jRepository<Tube, Long> {
             "  },\n" +
             "  startNode: start,\n" +
             "  endNode: end,\n" +
-            "  weightProperty: 'time'\n" +
+            "  relationshipWeightProperty: 'time'\n" +
             "})\n" +
             "YIELD nodeId, cost\n" +
             "RETURN gds.util.asNode(nodeId).name AS name, cost")
-    Map<String, Integer> detailedJourneyBetween(@Param("firstStation") String firstStation, @Param("secondStation") String secondStation);
+    List<SingleJourneyResult> detailedJourneyBetween(@Param("firstStation") String firstStation, @Param("secondStation") String secondStation);
 
 
 }

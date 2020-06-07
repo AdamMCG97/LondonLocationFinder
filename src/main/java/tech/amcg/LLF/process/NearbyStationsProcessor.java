@@ -1,9 +1,10 @@
-package tech.amcg.llf.service;
+package tech.amcg.llf.process;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.postcode.io.initializers.PostcodeLookup;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
@@ -11,33 +12,38 @@ import io.vavr.control.Try;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import tech.amcg.llf.mapper.RequestMapper;
+import tech.amcg.llf.domain.exception.LLFException;
 import tech.amcg.llf.domain.query.WorkLocation;
 import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.Query;
 import tech.amcg.llf.domain.query.Station;
+import tech.amcg.llf.mapper.TubeNameMapper;
+import tech.amcg.llf.service.APIRequestService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @Service
-public class NearbyStationsService {
+public class NearbyStationsProcessor {
 
-    private RequestMapper requestMapper;
+    private tech.amcg.llf.service.APIRequestService APIRequestService;
 
     private ObjectMapper objectMapper;
 
-    public NearbyStationsService(ObjectMapper objectMapper, RequestMapper requestMapper){
+    private TubeNameMapper tubeNameMapper;
+
+    public NearbyStationsProcessor(ObjectMapper objectMapper, APIRequestService APIRequestService, TubeNameMapper tubeNameMapper){
         this.objectMapper = objectMapper;
-        this.requestMapper = requestMapper;
+        this.APIRequestService = APIRequestService;
+        this.tubeNameMapper = tubeNameMapper;
     }
 
-    public void process(Query query) {
+    public void process(Query query) throws UnirestException, LLFException {
         enrichLocationData(query.getPersonParamsList());
         getNearestStationNames(query.getPersonParamsList());
         getClosestStationsByWalk(query.getPersonParamsList());
-
         query.getPersonParamsList().forEach(person -> { System.out.println(person.getWorkLocation().getPostcode()); person.getNearestStations().forEach(station -> System.out.println(station.getName()));});
     }
 
@@ -53,6 +59,8 @@ public class NearbyStationsService {
                 .onSuccess(station::setWalkTime)
                 .onSuccess(time -> stationList.add(station)));
 
+        stationList.forEach(station -> tubeNameMapper.map(station));
+
         stationList.sort(Comparator.comparingInt(Station::getWalkTime));
         return stationList;
     }
@@ -60,7 +68,7 @@ public class NearbyStationsService {
     private int getWalkingTimeFromStation(Station station, WorkLocation distanceFrom) throws JsonProcessingException {
         WebClient webClient = WebClient.create();
 
-        String url = requestMapper.getHereApiRequestUrl(distanceFrom.getLatitude(), distanceFrom.getLongitude(), station.getLatitude(), station.getLongitude());
+        String url = APIRequestService.getHereApiRequestUrl(distanceFrom.getLatitude(), distanceFrom.getLongitude(), station.getLatitude(), station.getLongitude());
         WebClient.RequestBodySpec uri = webClient.method(HttpMethod.GET).uri(url);
 
         String response = uri
@@ -73,7 +81,6 @@ public class NearbyStationsService {
         }
 
         JsonNode responseAsJson = objectMapper.readTree(response);
-       // System.out.println(responseAsJson.toPrettyString());
 
         return Math.round(extractTimeFromJson(responseAsJson) / 60f);
     }
@@ -90,7 +97,7 @@ public class NearbyStationsService {
     private List<Station> findNearestStations(String latitude, String longitude) throws JsonProcessingException {
         WebClient webClient = WebClient.create();
 
-        String url = requestMapper.getTransportApiRequestUrl(latitude, longitude);
+        String url = APIRequestService.getTransportApiRequestUrl(latitude, longitude);
         WebClient.RequestBodySpec uri = webClient.method(HttpMethod.GET).uri(url);
 
         String response = uri
@@ -127,7 +134,12 @@ public class NearbyStationsService {
         return firstPart + secondPart;
     }
 
-    private void enrichLocationData(List<Person> personList) {
+    private void enrichLocationData(List<Person> personList) throws UnirestException, LLFException {
+        for (Person person : personList) {
+            if (!PostcodeLookup.isValid(person.getWorkLocation().getPostcode())) {
+                throw new LLFException(String.format("Invalid postcode: %s", person.getWorkLocation().getPostcode()));
+            }
+        }
         personList.forEach(person -> Try.of(() -> getLatAndLong(person.getWorkLocation()))
                 .onSuccess(latAndLong -> person.getWorkLocation().setLatitude(latAndLong._1))
                 .onSuccess(latAndLong -> person.getWorkLocation().setLongitude(latAndLong._2)));

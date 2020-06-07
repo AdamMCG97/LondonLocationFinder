@@ -2,14 +2,18 @@ package tech.amcg.llf.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import tech.amcg.llf.mapper.RequestMapper;
+import tech.amcg.llf.service.APIRequestService;
+import tech.amcg.llf.mapper.TubeNameMapper;
 
 
 @Configuration
 public class ApplicationConfiguration {
 
     @Bean
-    public RequestMapper requestMapper(){ return new RequestMapper();}
+    public APIRequestService requestMapper(){ return new APIRequestService();}
+
+    @Bean
+    public TubeNameMapper tubeNameMapper() {return new TubeNameMapper();}
 
 /*@Bean(value="objectMapper")
 public ObjectMapper objectMapper(){

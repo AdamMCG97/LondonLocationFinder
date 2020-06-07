@@ -1,12 +1,12 @@
-package tech.amcg.llf.domain.mapping;
+package tech.amcg.llf.domain.response.mapping;
 
 import java.util.List;
 
-public class Journey {
+public class JourneyDetails {
 
     private List<JourneyStep> stepsList;
 
-    public Journey(List<JourneyStep> stepsList) {
+    public JourneyDetails(List<JourneyStep> stepsList) {
         this.stepsList = stepsList;
     }
 

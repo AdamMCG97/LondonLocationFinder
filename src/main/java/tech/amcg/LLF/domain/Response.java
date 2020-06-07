@@ -1,35 +1,27 @@
 package tech.amcg.llf.domain;
 
-import tech.amcg.llf.domain.mapping.Journey;
-import tech.amcg.llf.domain.mapping.LocationCandidate;
+import tech.amcg.llf.domain.response.LLFResult;
 
 import java.util.List;
 
 public class Response {
 
-    private List<Journey> journeyList;
+    private List<LLFResult> llfResults;
 
-    private List<LocationCandidate> matchingStationList;
+    private Query returnQuery;
 
-    public Response(List<LocationCandidate> matchingStationList) {
-        this.matchingStationList = matchingStationList;
+    public Response(List<LLFResult> llfResults, Query returnQuery) {
+        this.llfResults = llfResults;
+        this.returnQuery = returnQuery;
     }
 
     public Response(){}
 
-    public List<Journey> getJourneyList() {
-        return journeyList;
+    public List<LLFResult> getLlfResults() {
+        return llfResults;
     }
 
-    public void setJourneyList(List<Journey> journeyList) {
-        this.journeyList = journeyList;
-    }
-
-    public List<LocationCandidate> getMatchingStationList() {
-        return matchingStationList;
-    }
-
-    public void setMatchingStationList(List<LocationCandidate> matchingStationList) {
-        this.matchingStationList = matchingStationList;
+    public Query getReturnQuery() {
+        return returnQuery;
     }
 }

@@ -5,6 +5,8 @@ import java.util.Map;
 
 public class Person {
 
+    private String personID;
+
     private WorkLocation workLocation;
 
     private int maximumCommuteTime;
@@ -13,11 +15,15 @@ public class Person {
 
     private Map<String, Double> solutionCandidates;
 
+    private int maximumWalkTime;
+
     public Person(){}
 
-    public Person(WorkLocation workLocation, int maximumCommuteTime) {
+    public Person(WorkLocation workLocation, int maximumCommuteTime, String personID, int maximumWalkTime) {
         this.workLocation = workLocation;
         this.maximumCommuteTime = maximumCommuteTime;
+        this.personID = personID;
+        this.maximumWalkTime = maximumWalkTime;
     }
 
     public WorkLocation getWorkLocation() {
@@ -44,4 +50,11 @@ public class Person {
         this.solutionCandidates = solutionCandidates;
     }
 
+    public String getPersonID() {
+        return personID;
+    }
+
+    public int getMaximumWalkTime() {
+        return maximumWalkTime;
+    }
 }

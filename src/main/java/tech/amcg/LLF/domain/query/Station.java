@@ -1,6 +1,6 @@
 package tech.amcg.llf.domain.query;
 
-public class Station implements Location {
+public class Station {
     private String name;
 
     private String latitude;
@@ -52,5 +52,9 @@ public class Station implements Location {
 
     public void setWalkTime(int walkTime) {
         this.walkTime = walkTime;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

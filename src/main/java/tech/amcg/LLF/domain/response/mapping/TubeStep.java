@@ -1,4 +1,4 @@
-package tech.amcg.llf.domain.mapping;
+package tech.amcg.llf.domain.response.mapping;
 
 import tech.amcg.llf.domain.query.Location;
 

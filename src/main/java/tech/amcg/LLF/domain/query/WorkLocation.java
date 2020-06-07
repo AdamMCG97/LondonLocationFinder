@@ -1,6 +1,6 @@
 package tech.amcg.llf.domain.query;
 
-public class WorkLocation implements Location{
+public class WorkLocation {
     private String postcode;
 
     private String latitude;

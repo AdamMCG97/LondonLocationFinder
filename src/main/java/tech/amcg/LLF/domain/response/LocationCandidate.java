@@ -1,4 +1,4 @@
-package tech.amcg.llf.domain.mapping;
+package tech.amcg.llf.domain.response;
 
 import java.util.List;
 

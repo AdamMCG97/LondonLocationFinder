@@ -12,10 +12,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import tech.amcg.llf.mapper.RequestMapper;
-import tech.amcg.llf.domain.WorkLocation;
-import tech.amcg.llf.domain.Person;
+import tech.amcg.llf.domain.query.WorkLocation;
+import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.Query;
-import tech.amcg.llf.domain.Station;
+import tech.amcg.llf.domain.query.Station;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -37,24 +37,21 @@ public class NearbyStationsService {
         enrichLocationData(query.getPersonParamsList());
         getNearestStationNames(query.getPersonParamsList());
         getClosestStationsByWalk(query.getPersonParamsList());
-        query.getPersonParamsList().forEach(person -> { System.out.println(person.getWorkLocation().getPostcode()); person.getNearestStations().forEach(station -> {System.out.println(station.getName());});});
+
+        query.getPersonParamsList().forEach(person -> { System.out.println(person.getWorkLocation().getPostcode()); person.getNearestStations().forEach(station -> System.out.println(station.getName()));});
     }
 
     private void getClosestStationsByWalk(List<Person> personList) {
-        personList.forEach(person -> {
-            Try.of(() -> findClosestStationsByWalk(person))
-                    .onSuccess(person::setNearestStations);
-        });
+        personList.forEach(person -> Try.of(() -> findClosestStationsByWalk(person))
+                .onSuccess(person::setNearestStations));
     }
 
     private List<Station> findClosestStationsByWalk(Person person) {
         List<Station> stationList = new ArrayList<>();
 
-        person.getNearestStations().forEach(station -> {
-            Try.of(() -> getWalkingTimeFromStation(station, person.getWorkLocation()))
-                    .onSuccess(station::setWalkTime)
-                    .onSuccess(time -> stationList.add(station));
-        });
+        person.getNearestStations().forEach(station -> Try.of(() -> getWalkingTimeFromStation(station, person.getWorkLocation()))
+                .onSuccess(station::setWalkTime)
+                .onSuccess(time -> stationList.add(station)));
 
         stationList.sort(Comparator.comparingInt(Station::getWalkTime));
         return stationList;
@@ -62,7 +59,7 @@ public class NearbyStationsService {
 
     private int getWalkingTimeFromStation(Station station, WorkLocation distanceFrom) throws JsonProcessingException {
         WebClient webClient = WebClient.create();
-        WebClient.UriSpec<WebClient.RequestBodySpec> request = webClient.method(HttpMethod.GET);
+
         String url = requestMapper.getHereApiRequestUrl(distanceFrom.getLatitude(), distanceFrom.getLongitude(), station.getLatitude(), station.getLongitude());
         WebClient.RequestBodySpec uri = webClient.method(HttpMethod.GET).uri(url);
 
@@ -71,10 +68,14 @@ public class NearbyStationsService {
                 .bodyToMono(String.class)
                 .block();
 
+        if(null == response) {
+            return Integer.MAX_VALUE;
+        }
+
         JsonNode responseAsJson = objectMapper.readTree(response);
        // System.out.println(responseAsJson.toPrettyString());
 
-        return extractTimeFromJson(responseAsJson);
+        return Math.round(extractTimeFromJson(responseAsJson) / 60f);
     }
 
     private int extractTimeFromJson(JsonNode responseAsJson) {
@@ -82,16 +83,13 @@ public class NearbyStationsService {
     }
 
     private void getNearestStationNames(List<Person> personList){
-        personList.forEach(person -> {
-            Try.of(() -> findNearestStations(person.getWorkLocation().getLatitude(), person.getWorkLocation().getLongitude()))
-                    .onSuccess(person::setNearestStations);
-        });
+        personList.forEach(person -> Try.of(() -> findNearestStations(person.getWorkLocation().getLatitude(), person.getWorkLocation().getLongitude()))
+                .onSuccess(person::setNearestStations));
     }
 
     private List<Station> findNearestStations(String latitude, String longitude) throws JsonProcessingException {
         WebClient webClient = WebClient.create();
 
-        WebClient.UriSpec<WebClient.RequestBodySpec> request = webClient.method(HttpMethod.GET);
         String url = requestMapper.getTransportApiRequestUrl(latitude, longitude);
         WebClient.RequestBodySpec uri = webClient.method(HttpMethod.GET).uri(url);
 
@@ -99,6 +97,10 @@ public class NearbyStationsService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+
+        if(null == response) {
+            return new ArrayList<>();
+        }
 
         JsonNode responseAsJson = objectMapper.readTree(response);
         System.out.println(responseAsJson.toPrettyString());
@@ -110,9 +112,7 @@ public class NearbyStationsService {
         JsonNode stations = stationJsonResponse.get("stations");
         List<Station> stationList = new ArrayList<>();
 
-        stations.forEach(station -> {
-            stationList.add( new Station(station.get("name").toString(), station.get("latitude").toString(), station.get("longitude").toString(), convertAtcoToNaptan(station.get("atcocode").toString())));
-        });
+        stations.forEach(station -> stationList.add( new Station(station.get("name").asText(), station.get("latitude").toString(), station.get("longitude").toString(), convertAtcoToNaptan(station.get("atcocode").toString()))));
 
         return stationList;
     }
@@ -128,17 +128,13 @@ public class NearbyStationsService {
     }
 
     private void enrichLocationData(List<Person> personList) {
-        personList.forEach(person -> {
-            Try.of(() -> getLatAndLong(person.getWorkLocation()))
-                    .onSuccess(latAndLong -> person.getWorkLocation().setLatitude(latAndLong._1))
-                    .onSuccess(latAndLong -> person.getWorkLocation().setLongitude(latAndLong._2));
-        });
+        personList.forEach(person -> Try.of(() -> getLatAndLong(person.getWorkLocation()))
+                .onSuccess(latAndLong -> person.getWorkLocation().setLatitude(latAndLong._1))
+                .onSuccess(latAndLong -> person.getWorkLocation().setLongitude(latAndLong._2)));
     }
 
     private Tuple2<String, String> getLatAndLong(WorkLocation workLocation) throws Exception {
         JsonNode lookupResult = objectMapper.readTree(PostcodeLookup.postcode(workLocation.getPostcode()).asJson().get("result").toString());
         return Tuple.of(lookupResult.get("latitude").toString(), lookupResult.get("longitude").toString());
-        //System.out.println(lookupResult);
-        //System.out.println(String.format("Latitude: {%s}, Longitude: {%s}", lookupResult.get("latitude"), lookupResult.get("longitude")));
     }
 }

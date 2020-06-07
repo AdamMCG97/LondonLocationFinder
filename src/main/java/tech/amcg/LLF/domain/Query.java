@@ -1,5 +1,7 @@
 package tech.amcg.llf.domain;
 
+import tech.amcg.llf.domain.query.Person;
+
 import java.util.List;
 
 public class Query {

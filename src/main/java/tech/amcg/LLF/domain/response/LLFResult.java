@@ -12,9 +12,9 @@ public class LLFResult {
 
     private Double maximumTravelTime;
 
-    private int zone;
+    private Double zone;
 
-    public LLFResult(String name, List<IndividualJourney> individualJourneys, Double averageTravelTime, int zone, Double maximumTravelTime) {
+    public LLFResult(String name, List<IndividualJourney> individualJourneys, Double averageTravelTime, Double zone, Double maximumTravelTime) {
         this.name = name;
         this.individualJourneys = individualJourneys;
         this.averageTravelTime = averageTravelTime;
@@ -30,7 +30,7 @@ public class LLFResult {
         return individualJourneys;
     }
 
-    public int getZone() {
+    public Double getZone() {
         return zone;
     }
 

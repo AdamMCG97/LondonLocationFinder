@@ -3,14 +3,16 @@ package tech.amcg.llf.domain.neo4j;
 import org.springframework.data.neo4j.annotation.QueryResult;
 
 @QueryResult
-public class AllStationsResult {
+public class SingleSourceShortestPathResult {
 
     String destination;
     Double distance;
+    Double zone;
 
-    public AllStationsResult(String destination, Double distance) {
+    public SingleSourceShortestPathResult(String destination, Double distance, Double zone) {
         this.destination = destination;
         this.distance = distance;
+        this.zone = zone;
     }
 
     public String getDestination() {
@@ -29,4 +31,11 @@ public class AllStationsResult {
         this.distance = distance;
     }
 
+    public Double getZone() {
+        return zone;
+    }
+
+    public void setZone(Double zone) {
+        this.zone = zone;
+    }
 }

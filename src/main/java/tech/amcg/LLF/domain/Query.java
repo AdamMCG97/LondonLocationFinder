@@ -8,7 +8,7 @@ public class Query {
 
     private List<Person> personParamsList;
 
-    private List<Integer> exclusionZones;
+    private List<Double> exclusionZones;
 
     private int numberOfBedrooms;
 
@@ -20,7 +20,7 @@ public class Query {
 
     public Query(){}
 
-    public Query(List<Person> personParamsList, int numberOfBedrooms, int lowerBoundPriceRange, int upperBoundPriceRange, boolean differentCommuteMaximums, List<Integer> exclusionZones) {
+    public Query(List<Person> personParamsList, int numberOfBedrooms, int lowerBoundPriceRange, int upperBoundPriceRange, boolean differentCommuteMaximums, List<Double> exclusionZones) {
         this.personParamsList = personParamsList;
         this.numberOfBedrooms = numberOfBedrooms;
         this.lowerBoundPriceRange = lowerBoundPriceRange;
@@ -49,7 +49,7 @@ public class Query {
         return differentCommuteMaximums;
     }
 
-    public List<Integer> getExclusionZones() {
+    public List<Double> getExclusionZones() {
         return exclusionZones;
     }
 }

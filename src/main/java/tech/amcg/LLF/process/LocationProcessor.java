@@ -1,9 +1,9 @@
 package tech.amcg.llf.process;
 
 import org.apache.commons.collections4.IterableUtils;
-import org.apache.commons.collections4.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import tech.amcg.llf.domain.exception.LLFException;
 import tech.amcg.llf.domain.response.IndividualJourney;
 import tech.amcg.llf.domain.response.LLFResult;
@@ -11,15 +11,13 @@ import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.Query;
 import tech.amcg.llf.domain.Response;
 import tech.amcg.llf.domain.query.Station;
-import tech.amcg.llf.domain.neo4j.AllStationsResult;
+import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
 import tech.amcg.llf.service.Neo4JRepositoryService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Service
 public class LocationProcessor {
@@ -32,7 +30,7 @@ public class LocationProcessor {
     public Response process(Query query) {
         query.getPersonParamsList().forEach(person -> {
             try {
-                findLocationsForPerson(person);
+                findLocationsForPerson(person, query.getExclusionZones());
             } catch (LLFException e) {
                 throw new RuntimeException(e);
             }
@@ -41,31 +39,34 @@ public class LocationProcessor {
         return new Response(findMatchingLocations(query.getPersonParamsList()), query);
     }
 
-    private void findLocationsForPerson(Person person) throws LLFException {
-        Map<String, Double> acceptableStations = new HashMap<>();
+    private void findLocationsForPerson(Person person, List<Double> exclusionZones) throws LLFException {
         Station nearestStation = person.getNearestStations().get(0);
 
-        List<AllStationsResult> results = neo4JRepositoryService.distanceToAllStations(nearestStation.getName());
+        List<SingleSourceShortestPathResult> results = neo4JRepositoryService.distanceToAllStations(nearestStation.getName());
 
         if(results.size() == 0) {
             throw new LLFException(String.format("Station Not Found on our Underground Map: %s. Identified as closest station to %s.", nearestStation.getName(), person.getWorkLocation().getPostcode()));
         }
 
         results.removeIf(result -> result.getDistance() + nearestStation.getWalkTime() > person.getMaximumCommuteTime());
-        results.forEach(result -> acceptableStations.put(result.getDestination(), result.getDistance()));
+        results.removeIf(result -> exclusionZones.contains(result.getZone()));
 
-        person.setSolutionCandidates(acceptableStations);
+        person.setSolutionCandidates(results);
     }
 
     private List<LLFResult> findMatchingLocations(List<Person> personList) {
         List<LLFResult> matchingList = new ArrayList<>();
 
-        for(String station : personList.get(0).getSolutionCandidates().keySet()) {
+        List<String> firstPersonStationList = personList.get(0).getSolutionCandidates()
+                .stream().map(SingleSourceShortestPathResult::getDestination).collect(Collectors.toList());
+
+        for(String station : firstPersonStationList) {
             var ref = new Object() {
                 boolean optionForAllPeople = true;
             };
 
-            personList.forEach(person -> ref.optionForAllPeople = ref.optionForAllPeople && person.getSolutionCandidates().containsKey(station));
+            personList.forEach(person -> ref.optionForAllPeople = ref.optionForAllPeople
+                    && !(null == (findElementInListByString(person.getSolutionCandidates(), station))));
 
             if(ref.optionForAllPeople) {
                 matchingList.add(generateResultObject(personList, station));
@@ -82,7 +83,7 @@ public class LocationProcessor {
         AtomicReference<Double> maximumTravelTime = new AtomicReference<>(0d);
 
         personList.forEach(person -> {
-            Double travelTime = person.getSolutionCandidates().get(stationName) + person.getNearestStations().get(0).getWalkTime();
+            Double travelTime = findElementInListByString(person.getSolutionCandidates(), stationName).getDistance() + person.getNearestStations().get(0).getWalkTime();
 
             if(travelTime > maximumTravelTime.get()) {
                 maximumTravelTime.getAndUpdate( v -> travelTime);
@@ -92,13 +93,16 @@ public class LocationProcessor {
         });
 
         Double averageTime = totalTravelTime.updateAndGet(v -> v / personList.size());
+        Double zone = findElementInListByString(personList.get(0).getSolutionCandidates(), stationName).getZone();
 
-        return new LLFResult(stationName, individualJourneys, averageTime, temporaryRandomIntGenerator(), maximumTravelTime.get());
+        return new LLFResult(stationName, individualJourneys, averageTime, zone, maximumTravelTime.get());
     }
 
-    private Integer temporaryRandomIntGenerator() {
-        Random random = new Random();
-
-        return random.nextInt(7 - 1 + 1) + 1;
+    private SingleSourceShortestPathResult findElementInListByString(List<SingleSourceShortestPathResult> list, String itemToFind) {
+        return IterableUtils.find(list,
+                singleSourceShortestPathResult -> itemToFind.equals(singleSourceShortestPathResult.getDestination())
+        );
     }
+
+
 }

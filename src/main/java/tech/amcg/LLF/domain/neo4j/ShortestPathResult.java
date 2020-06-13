@@ -3,12 +3,12 @@ package tech.amcg.llf.domain.neo4j;
 import org.springframework.data.neo4j.annotation.QueryResult;
 
 @QueryResult
-public class SingleJourneyResult {
+public class ShortestPathResult {
 
     String name;
     Double cost;
 
-    public SingleJourneyResult(String name, Double cost) {
+    public ShortestPathResult(String name, Double cost) {
         this.name = name;
         this.cost = cost;
     }

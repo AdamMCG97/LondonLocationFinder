@@ -4,8 +4,8 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import tech.amcg.llf.domain.neo4j.AllStationsResult;
-import tech.amcg.llf.domain.neo4j.SingleJourneyResult;
+import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
+import tech.amcg.llf.domain.neo4j.ShortestPathResult;
 import tech.amcg.llf.domain.neo4j.Tube;
 
 import java.util.List;
@@ -27,8 +27,8 @@ public interface TubeRepository extends Neo4jRepository<Tube, Long> {
             "\tdelta: 3.0\n" +
             "})\n" +
             "YIELD nodeId, distance\n" +
-            "RETURN gds.util.asNode(nodeId).name AS destination, distance")
-    List<AllStationsResult> distanceToAllStations(@Param("name") String name);
+            "RETURN gds.util.asNode(nodeId).name AS destination, distance, gds.util.asNode(nodeId).zone As zone")
+    List<SingleSourceShortestPathResult> distanceToAllStations(@Param("name") String name);
 
     @Query("MATCH (start:Station {name: $firstStation}), (end:Station {name: $secondStation})\n" +
             "CALL gds.alpha.shortestPath.stream({\n" +
@@ -45,7 +45,7 @@ public interface TubeRepository extends Neo4jRepository<Tube, Long> {
             "})\n" +
             "YIELD nodeId, cost\n" +
             "RETURN gds.util.asNode(nodeId).name AS name, cost")
-    List<SingleJourneyResult> detailedJourneyBetween(@Param("firstStation") String firstStation, @Param("secondStation") String secondStation);
+    List<ShortestPathResult> detailedJourneyBetween(@Param("firstStation") String firstStation, @Param("secondStation") String secondStation);
 
 
 }

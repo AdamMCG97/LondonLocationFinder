@@ -1,7 +1,8 @@
 package tech.amcg.llf.domain.query;
 
+import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
+
 import java.util.List;
-import java.util.Map;
 
 public class Person {
 
@@ -13,7 +14,7 @@ public class Person {
 
     private List<Station> nearestStations;
 
-    private Map<String, Double> solutionCandidates;
+    private List<SingleSourceShortestPathResult> solutionCandidates;
 
     private int maximumWalkTime;
 
@@ -42,11 +43,11 @@ public class Person {
         return nearestStations;
     }
 
-    public Map<String, Double> getSolutionCandidates() {
+    public List<SingleSourceShortestPathResult> getSolutionCandidates() {
         return solutionCandidates;
     }
 
-    public void setSolutionCandidates(Map<String, Double> solutionCandidates) {
+    public void setSolutionCandidates(List<SingleSourceShortestPathResult> solutionCandidates) {
         this.solutionCandidates = solutionCandidates;
     }
 

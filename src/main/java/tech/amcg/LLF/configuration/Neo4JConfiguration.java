@@ -2,13 +2,17 @@ package tech.amcg.llf.configuration;
 
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.transaction.Neo4jTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import tech.amcg.llf.repository.TubeRepository;
 
 @Configuration
 @EnableNeo4jRepositories(basePackages="tech.amcg.llf")
+@EnableTransactionManagement
+@ComponentScan
 public class Neo4JConfiguration {
 
     @Bean

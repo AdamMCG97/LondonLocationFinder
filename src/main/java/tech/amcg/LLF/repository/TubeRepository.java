@@ -46,5 +46,5 @@ public interface TubeRepository extends Neo4jRepository<Tube, Long> {
             "YIELD nodeId, cost\n" +
             "RETURN gds.util.asNode(nodeId).name AS name, cost")
     List<ShortestPathResult> detailedJourneyBetween(@Param("firstStation") String firstStation, @Param("secondStation") String secondStation);
-    
+
 }

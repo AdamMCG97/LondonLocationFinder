@@ -29,6 +29,6 @@ public class LLFController {
 
     @RequestMapping("/llfquery")
     public Query getLLFQuery(){
-        return new Query(Arrays.asList(new Person( new WorkLocation("W2 6TT"), 20, "Ryan", 15), new Person(new WorkLocation("SE16 6YR"), 30, "Adam", 10)), 2, 1500, 2000, true, Arrays.asList(1d,2d));
+        return new Query(Arrays.asList(new Person( new WorkLocation("W2 6TT"), 40, "Ryan", 15), new Person(new WorkLocation("E14 5AH"), 30, "Adam", 10)), 2, 1500, 2000, true, Arrays.asList(1d,2d));
     }
 }

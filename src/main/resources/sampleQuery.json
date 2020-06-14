@@ -1,25 +1,34 @@
 {
   "personParamsList": [
     {
+      "personID": "Ryan",
       "workLocation": {
         "postcode": "W2 6TT",
         "latitude": null,
         "longitude": null
       },
-      "maximumCommuteTime": 20,
-      "nearestStations": null
+      "maximumCommuteTime": 40,
+      "nearestStations": null,
+      "solutionCandidates": null,
+      "maximumWalkTime": 15
     },
     {
+      "personID": "Adam",
       "workLocation": {
-        "postcode": "E14 5GH",
+        "postcode": "E14 5AH",
         "latitude": null,
         "longitude": null
       },
       "maximumCommuteTime": 30,
-      "nearestStations": null
+      "nearestStations": null,
+      "solutionCandidates": null,
+      "maximumWalkTime": 10
     }
   ],
-  "modeOfTransport": "Tube Only",
+  "exclusionZones": [
+    1,
+    2
+  ],
   "numberOfBedrooms": 2,
   "lowerBoundPriceRange": 1500,
   "upperBoundPriceRange": 2000

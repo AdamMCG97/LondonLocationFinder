@@ -28,7 +28,7 @@ public class Neo4JConfiguration {
 
     @Bean
     public SessionFactory sessionFactory() {
-        return new SessionFactory(getConfiguration(), "tech.amcg.llf");
+        return new SessionFactory(getConfiguration());
     }
 
 /*    @Bean

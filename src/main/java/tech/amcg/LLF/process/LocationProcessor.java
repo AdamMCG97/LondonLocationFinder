@@ -57,10 +57,10 @@ public class LocationProcessor {
     private List<LLFResult> findMatchingLocations(List<Person> personList) {
         List<LLFResult> matchingList = new ArrayList<>();
 
-        List<String> firstPersonStationList = personList.get(0).getSolutionCandidates()
+        List<String> firstPersonStationsList = personList.get(0).getSolutionCandidates()
                 .stream().map(SingleSourceShortestPathResult::getDestination).collect(Collectors.toList());
 
-        for(String station : firstPersonStationList) {
+        for(String station : firstPersonStationsList) {
             var ref = new Object() {
                 boolean optionForAllPeople = true;
             };

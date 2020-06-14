@@ -1,3 +1,4 @@
+/*
 package tech.amcg.llf.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,3 +29,4 @@ public class Neo4JController {
         return neo4JRepositoryService.detailedJourneyBetween(firstStation, lastStation);
     }
 }
+*/

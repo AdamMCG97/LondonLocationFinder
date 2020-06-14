@@ -1,5 +1,6 @@
 package tech.amcg.llf.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import tech.amcg.llf.service.APIRequestService;
@@ -15,11 +16,11 @@ public class ApplicationConfiguration {
     @Bean
     public TubeNameMapper tubeNameMapper() {return new TubeNameMapper();}
 
-/*@Bean(value="objectMapper")
-public ObjectMapper objectMapper(){
-    return new ObjectMapper();
-}
-
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+/*
 @Bean(value="queryProcessorService")
 public QueryProcessorService queryProcessorService() {
     return new QueryProcessorService();

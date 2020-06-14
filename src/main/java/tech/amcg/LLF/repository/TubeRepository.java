@@ -8,6 +8,7 @@ import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
 import tech.amcg.llf.domain.neo4j.ShortestPathResult;
 import tech.amcg.llf.domain.neo4j.Tube;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Repository

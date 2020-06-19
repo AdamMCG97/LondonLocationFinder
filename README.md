@@ -5,9 +5,13 @@ Takes a specific query, a sample can be found in the resources folder in the tec
 
 Currently hosted on heroku at amcg-llf.herokuapp.com. Feel free to utilise the back end of this system, though it isn't yet finished. A postman collection for the 4 endpoints of this system can be found linked below, or just use your browser for the get requests.
 
-https://www.getpostman.com/collections/563c55f1e60472a4dfd2
+Apologies if there are issues when testing this system, it is still a work in progress and currently it is utilising the free tiers heroku offers, meanining responses can be very slow when it has not received a request for a while, sometimes even timing out without a response or returning an internal server error if the database isn't fully awake yet.
 
-Apologies if there are issues when testing this system, it is still a work in progress and currently it is utilising the free tiers heroku offers, meanining responses can be very slow when it has not received a request for a while, sometimes even timing out without a response.
+To Import postman collection:
+
+Open desktop postman app > import > link > enter below URL > continue > import
+
+https://www.getpostman.com/collections/563c55f1e60472a4dfd2
 
 # To Do
 Increase travel times between stations by a certain number of minutes for each required line change to complete each journey.

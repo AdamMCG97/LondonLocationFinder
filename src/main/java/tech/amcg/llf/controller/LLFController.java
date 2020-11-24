@@ -4,20 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import tech.amcg.llf.domain.query.WorkLocation;
 import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.Query;
 import tech.amcg.llf.domain.Response;
-import tech.amcg.llf.service.Neo4JRepositoryService;
 import tech.amcg.llf.service.QueryProcessorService;
 
 import java.util.Arrays;
 
-@org.springframework.web.bind.annotation.RestController
+@RestController
 public class LLFController {
-
-    @Autowired
-    Neo4JRepositoryService neo4JRepositoryService;
 
     @Autowired
     QueryProcessorService queryProcessorService;
@@ -29,6 +26,6 @@ public class LLFController {
 
     @RequestMapping("/llfquery")
     public Query getLLFQuery(){
-        return new Query(Arrays.asList(new Person( new WorkLocation("W2 6TT"), 40, "Ryan", 15), new Person(new WorkLocation("E14 5AH"), 30, "Adam", 10)), 2, 1500, 2000, true, Arrays.asList(1d,2d));
+        return new Query(Arrays.asList(new Person( new WorkLocation("W2 6TT"), 40, "Ryan", 15), new Person(new WorkLocation("E14 5AH"), 30, "Adam", 10)), 2, 1500, 2000, true, Arrays.asList(1d,1.5d,2d));
     }
 }

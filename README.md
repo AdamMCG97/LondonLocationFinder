@@ -11,13 +11,12 @@ To Import postman collection:
 
 Open desktop postman app > import > link > enter below URL > continue > import
 
-https://www.getpostman.com/collections/563c55f1e60472a4dfd2
+https://www.getpostman.com/collections/170a629aee480d991456
 
 # To Do
 Increase travel times between stations by a certain number of minutes for each required line change to complete each journey.
 
-Return the steps taken for each journey returned in the core response.
+Improve the Neo4j query to return the tube line when requesting a detailed journey and group journey steps accordingly.
 
 Increase test coverage.
 
-Add support for automatically excluding half zones between 2 zones that have been excluded.

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tech.amcg.llf.domain.exception.LLFException;
+import tech.amcg.llf.domain.neo4j.ShortestPathResult;
 import tech.amcg.llf.domain.response.IndividualJourney;
 import tech.amcg.llf.domain.response.LLFResult;
 import tech.amcg.llf.domain.query.Person;
@@ -12,6 +13,11 @@ import tech.amcg.llf.domain.Query;
 import tech.amcg.llf.domain.Response;
 import tech.amcg.llf.domain.query.Station;
 import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
+import tech.amcg.llf.domain.response.mapping.JourneyDetails;
+import tech.amcg.llf.domain.response.mapping.JourneyStep;
+import tech.amcg.llf.domain.response.mapping.SpecificWalkStep;
+import tech.amcg.llf.domain.response.mapping.VariableWalkStep;
+import tech.amcg.llf.mapper.TubeStepMapper;
 import tech.amcg.llf.service.Neo4JRepositoryService;
 
 import java.util.ArrayList;
@@ -24,6 +30,9 @@ public class LocationProcessor {
 
     @Autowired
     Neo4JRepositoryService neo4JRepositoryService;
+
+    @Autowired
+    TubeStepMapper tubeStepMapper;
 
     LocationProcessor(){}
 
@@ -89,7 +98,8 @@ public class LocationProcessor {
                 maximumTravelTime.getAndUpdate( v -> travelTime);
             }
             totalTravelTime.updateAndGet(v -> v + travelTime);
-            individualJourneys.add(new IndividualJourney(person.getPersonID(), person.getWorkLocation().getPostcode(), travelTime));
+            JourneyDetails journeyDetails = getDetailedJourney(person, stationName, travelTime.intValue());
+            individualJourneys.add(new IndividualJourney(person.getPersonID(), person.getWorkLocation().getPostcode(), travelTime, journeyDetails));
         });
 
         Double averageTime = totalTravelTime.updateAndGet(v -> v / personList.size());
@@ -104,5 +114,16 @@ public class LocationProcessor {
         );
     }
 
+    private JourneyDetails getDetailedJourney(Person person, String candidateStationName, int travelTime) {
+        List<JourneyStep> resultSteps = new ArrayList<>();
+        //add walk step between work location and closest station
+        resultSteps.add(new SpecificWalkStep(person.getWorkLocation().getPostcode(), person.getNearestStations().get(0).getName(), person.getNearestStations().get(0).getWalkTime()));
+        List<ShortestPathResult> detailedTubeJourney = neo4JRepositoryService.detailedJourneyBetween(person.getNearestStations().get(0).getName(), candidateStationName);
+        //add all the tube stops between work station and candidate station
+        resultSteps.addAll(tubeStepMapper.map(detailedTubeJourney));
+        //add generic walk step from candidate station to anywhere within commute limit
+        resultSteps.add(new VariableWalkStep(candidateStationName, person.getMaximumCommuteTime() - travelTime));
+        return new JourneyDetails(resultSteps);
+    }
 
 }

@@ -1,6 +1,6 @@
 package tech.amcg.llf.domain.query;
 
-public class Station {
+public class Station implements Location {
     private String name;
 
     private String latitude;

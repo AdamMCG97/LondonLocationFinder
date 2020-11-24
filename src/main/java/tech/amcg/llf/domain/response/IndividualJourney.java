@@ -4,18 +4,19 @@ import tech.amcg.llf.domain.response.mapping.JourneyDetails;
 
 public class IndividualJourney {
 
-    private String personID;
+    private final String personID;
 
-    private String workPostcode;
+    private final String workPostcode;
 
-    private Double travelTime;
+    private final Double travelTime;
 
-    private JourneyDetails journeyDetails;
+    private final JourneyDetails journeyDetails;
 
-    public IndividualJourney(String personID, String workPostcode, Double travelTime) {
+    public IndividualJourney(String personID, String workPostcode, Double travelTime, JourneyDetails journeyDetails) {
         this.personID = personID;
         this.workPostcode = workPostcode;
         this.travelTime = travelTime;
+        this.journeyDetails = journeyDetails;
     }
 
     public String getPersonID() {
@@ -29,4 +30,6 @@ public class IndividualJourney {
     public Double getTravelTime() {
         return travelTime;
     }
+
+    public JourneyDetails getJourneyDetails() { return journeyDetails; }
 }

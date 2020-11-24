@@ -1,35 +1,27 @@
 package tech.amcg.llf.domain.response.mapping;
 
-import tech.amcg.llf.domain.query.Location;
+public class WalkStep implements JourneyStep {
+    private final JourneyType journeyType = JourneyType.WALK;
 
-public class WalkStep {
-    private JourneyType journeyType = JourneyType.WALK;
+    private final String startPoint;
 
-    private Location startPoint;
+    private final String endPoint;
 
-    private Location endPoint;
-
-    private int duration;
-
-    public WalkStep(Location startPoint, Location endPoint, int duration) {
+    public WalkStep(String startPoint, String endPoint) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
-        this.duration = duration;
     }
 
     public JourneyType getJourneyType() {
         return journeyType;
     }
 
-    public Location getStartPoint() {
+    public String getStartPoint() {
         return startPoint;
     }
 
-    public Location getEndPoint() {
+    public String getEndPoint() {
         return endPoint;
     }
 
-    public int getDuration() {
-        return duration;
-    }
 }

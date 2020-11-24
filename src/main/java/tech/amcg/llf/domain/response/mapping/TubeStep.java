@@ -1,19 +1,17 @@
 package tech.amcg.llf.domain.response.mapping;
 
-import tech.amcg.llf.domain.query.Location;
-
 public class TubeStep implements JourneyStep {
     private JourneyType journeyType = JourneyType.TUBE;
 
-    private Location startPoint;
+    private String startPoint;
 
-    private Location endPoint;
+    private String endPoint;
 
     private TubeLine tubeLine;
 
     private int duration;
 
-    public TubeStep(Location startPoint, Location endPoint, TubeLine tubeLine, int duration) {
+    public TubeStep(String startPoint, String endPoint, TubeLine tubeLine, int duration) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.tubeLine = tubeLine;
@@ -24,11 +22,11 @@ public class TubeStep implements JourneyStep {
         return journeyType;
     }
 
-    public Location getStartPoint() {
+    public String getStartPoint() {
         return startPoint;
     }
 
-    public Location getEndPoint() {
+    public String getEndPoint() {
         return endPoint;
     }
 
@@ -41,6 +39,3 @@ public class TubeStep implements JourneyStep {
     }
 }
 
-enum TubeLine {
-    JUBILEE, METROPOLITAN, HAMMERSMITHANDCITY, NORTHERN, BAKERLOO, CENTRAL, CIRCLE, DISTRICT, VICTORIA, ELIZABETH, PICADILLY, DLR, WATERLOOANDCITY;
-}

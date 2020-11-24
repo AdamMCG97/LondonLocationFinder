@@ -3,6 +3,7 @@ package tech.amcg.llf.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tech.amcg.llf.mapper.TubeStepMapper;
 import tech.amcg.llf.service.APIRequestService;
 import tech.amcg.llf.mapper.TubeNameMapper;
 
@@ -15,6 +16,9 @@ public class ApplicationConfiguration {
 
     @Bean
     public TubeNameMapper tubeNameMapper() {return new TubeNameMapper();}
+
+    @Bean
+    public TubeStepMapper tubeStepMapper() {return new TubeStepMapper();}
 
     @Bean
     public ObjectMapper objectMapper() {

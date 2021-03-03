@@ -2,41 +2,41 @@ package tech.amcg.llf.process;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.postcode.io.initializers.PostcodeLookup;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.control.Try;
-import org.springframework.http.HttpMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 import tech.amcg.llf.domain.exception.LLFException;
 import tech.amcg.llf.domain.query.WorkLocation;
 import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.Query;
 import tech.amcg.llf.domain.query.Station;
 import tech.amcg.llf.mapper.TubeNameMapper;
-import tech.amcg.llf.service.APIRequestService;
+import tech.amcg.llf.service.ApiRequestService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class NearbyStationsProcessor {
 
-    private tech.amcg.llf.service.APIRequestService APIRequestService;
+    private final ApiRequestService apiRequestService;
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-    private TubeNameMapper tubeNameMapper;
+    private final TubeNameMapper tubeNameMapper;
 
-    public NearbyStationsProcessor(ObjectMapper objectMapper, APIRequestService APIRequestService, TubeNameMapper tubeNameMapper){
+    private final Logger logger = LoggerFactory.getLogger(NearbyStationsProcessor.class);
+
+    public NearbyStationsProcessor(ObjectMapper objectMapper, ApiRequestService apiRequestService, TubeNameMapper tubeNameMapper){
         this.objectMapper = objectMapper;
-        this.APIRequestService = APIRequestService;
+        this.apiRequestService = apiRequestService;
         this.tubeNameMapper = tubeNameMapper;
     }
 
@@ -44,7 +44,6 @@ public class NearbyStationsProcessor {
         enrichLocationData(query.getPersonParamsList());
         getNearestStationNames(query.getPersonParamsList());
         getClosestStationsByWalk(query.getPersonParamsList());
-        query.getPersonParamsList().forEach(person -> { System.out.println(person.getWorkLocation().getPostcode()); person.getNearestStations().forEach(station -> System.out.println(station.getName()));});
     }
 
     private void getClosestStationsByWalk(List<Person> personList) {
@@ -59,29 +58,21 @@ public class NearbyStationsProcessor {
                 .onSuccess(station::setWalkTime)
                 .onSuccess(time -> stationList.add(station)));
 
-        stationList.forEach(station -> tubeNameMapper.map(station));
+        stationList.forEach(tubeNameMapper::map);
 
         stationList.sort(Comparator.comparingInt(Station::getWalkTime));
         return stationList;
     }
 
     private int getWalkingTimeFromStation(Station station, WorkLocation distanceFrom) throws JsonProcessingException {
-        WebClient webClient = WebClient.create();
-
-        String url = APIRequestService.getHereApiRequestUrl(distanceFrom.getLatitude(), distanceFrom.getLongitude(), station.getLatitude(), station.getLongitude());
-        WebClient.RequestBodySpec uri = webClient.method(HttpMethod.GET).uri(url);
-
-        String response = uri
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        String url = apiRequestService.getHereApiRequestUrl(distanceFrom.getLatitude(), distanceFrom.getLongitude(), station.getLatitude(), station.getLongitude());
+        String response = apiRequestService.get(url);
 
         if(null == response) {
             return Integer.MAX_VALUE;
         }
 
         JsonNode responseAsJson = objectMapper.readTree(response);
-
         return Math.round(extractTimeFromJson(responseAsJson) / 60f);
     }
 
@@ -95,23 +86,14 @@ public class NearbyStationsProcessor {
     }
 
     private List<Station> findNearestStations(String latitude, String longitude) throws JsonProcessingException {
-        WebClient webClient = WebClient.create();
-
-        String url = APIRequestService.getTransportApiRequestUrl(latitude, longitude);
-        WebClient.RequestBodySpec uri = webClient.method(HttpMethod.GET).uri(url);
-
-        String response = uri
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        String url = apiRequestService.getTransportApiRequestUrl(latitude, longitude);
+        String response = apiRequestService.get(url);
 
         if(null == response) {
             return new ArrayList<>();
         }
 
         JsonNode responseAsJson = objectMapper.readTree(response);
-        System.out.println(responseAsJson.toPrettyString());
-
         return extractStationsFromJson(responseAsJson);
     }
 
@@ -120,7 +102,6 @@ public class NearbyStationsProcessor {
         List<Station> stationList = new ArrayList<>();
 
         stations.forEach(station -> stationList.add( new Station(station.get("name").asText(), station.get("latitude").toString(), station.get("longitude").toString(), convertAtcoToNaptan(station.get("atcocode").toString()))));
-
         return stationList;
     }
 

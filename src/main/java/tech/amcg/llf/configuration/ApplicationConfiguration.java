@@ -3,8 +3,9 @@ package tech.amcg.llf.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
 import tech.amcg.llf.mapper.TubeStepMapper;
-import tech.amcg.llf.service.APIRequestService;
+import tech.amcg.llf.service.ApiRequestService;
 import tech.amcg.llf.mapper.TubeNameMapper;
 
 
@@ -12,7 +13,7 @@ import tech.amcg.llf.mapper.TubeNameMapper;
 public class ApplicationConfiguration {
 
     @Bean
-    public APIRequestService requestMapper(){ return new APIRequestService();}
+    public ApiRequestService requestMapper(){ return new ApiRequestService();}
 
     @Bean
     public TubeNameMapper tubeNameMapper() {return new TubeNameMapper();}
@@ -23,6 +24,11 @@ public class ApplicationConfiguration {
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
+    }
+
+    @Bean
+    public WebClient webClient() {
+        return WebClient.create();
     }
 /*
 @Bean(value="queryProcessorService")

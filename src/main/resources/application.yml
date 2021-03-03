@@ -1,0 +1,14 @@
+org:
+  neo4j:
+    driver:
+      uri: ${NEO4J_URI}
+      authentication:
+        username: ${NEO4J_USER}
+        password: ${NEO4J_PASSWORD}
+
+logging:
+  level:
+    root: INFO
+    tech:
+      amcg:
+        llf: DEBUG

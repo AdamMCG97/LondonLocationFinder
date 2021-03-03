@@ -1,6 +1,6 @@
 package tech.amcg.llf.domain.query;
 
-import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
+import tech.amcg.llf.domain.neo4j.LegacySingleSourceShortestPathResult;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class Person {
 
     private List<Station> nearestStations;
 
-    private List<SingleSourceShortestPathResult> solutionCandidates;
+    private List<LegacySingleSourceShortestPathResult> solutionCandidates;
 
     private int maximumWalkTime;
 
@@ -43,11 +43,11 @@ public class Person {
         return nearestStations;
     }
 
-    public List<SingleSourceShortestPathResult> getSolutionCandidates() {
+    public List<LegacySingleSourceShortestPathResult> getSolutionCandidates() {
         return solutionCandidates;
     }
 
-    public void setSolutionCandidates(List<SingleSourceShortestPathResult> solutionCandidates) {
+    public void setSolutionCandidates(List<LegacySingleSourceShortestPathResult> solutionCandidates) {
         this.solutionCandidates = solutionCandidates;
     }
 

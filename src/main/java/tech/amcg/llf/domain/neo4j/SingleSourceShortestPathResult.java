@@ -2,40 +2,73 @@ package tech.amcg.llf.domain.neo4j;
 
 import org.springframework.data.neo4j.annotation.QueryResult;
 
+import java.util.ArrayList;
+
 @QueryResult
 public class SingleSourceShortestPathResult {
 
-    String destination;
-    Double distance;
-    Double zone;
+    long index;
+    String sourceNodeName;
+    String targetNodeName;
+    Double totalCost;
+    ArrayList<String> nodeNames;
+    ArrayList<Double> costs;
 
-    public SingleSourceShortestPathResult(String destination, Double distance, Double zone) {
-        this.destination = destination;
-        this.distance = distance;
-        this.zone = zone;
+    public SingleSourceShortestPathResult(long index, String sourceNodeName, String targetNodeName, Double totalCost, ArrayList<String> nodeNames, ArrayList<Double> costs) {
+        this.index = index;
+        this.sourceNodeName = sourceNodeName;
+        this.targetNodeName = targetNodeName;
+        this.totalCost = totalCost;
+        this.nodeNames = nodeNames;
+        this.costs = costs;
     }
 
-    public String getDestination() {
-        return destination;
+    public long getIndex() {
+        return index;
     }
 
-    public void setDestination(String destination) {
-        this.destination = destination;
+    public void setIndex(long index) {
+        this.index = index;
     }
 
-    public Double getDistance() {
-        return distance;
+    public String getSourceNodeName() {
+        return sourceNodeName;
     }
 
-    public void setDistance(Double distance) {
-        this.distance = distance;
+    public void setSourceNodeName(String sourceNodeName) {
+        this.sourceNodeName = sourceNodeName;
     }
 
-    public Double getZone() {
-        return zone;
+    public String getTargetNodeName() {
+        return targetNodeName;
     }
 
-    public void setZone(Double zone) {
-        this.zone = zone;
+    public void setTargetNodeName(String targetNodeName) {
+        this.targetNodeName = targetNodeName;
+    }
+
+    public Double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(Double totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public ArrayList<String> getNodeNames() {
+        return nodeNames;
+    }
+
+    public void setNodeNames(ArrayList<String> nodeNames) {
+        this.nodeNames = nodeNames;
+    }
+
+    public ArrayList<Double> getCosts() {
+        return costs;
+    }
+
+    public void setCosts(ArrayList<Double> costs) {
+        this.costs = costs;
     }
 }
+

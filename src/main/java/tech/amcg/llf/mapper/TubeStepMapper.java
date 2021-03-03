@@ -1,6 +1,6 @@
 package tech.amcg.llf.mapper;
 
-import tech.amcg.llf.domain.neo4j.LegacyShortestPathResult;
+import tech.amcg.llf.domain.neo4j.ShortestPathResult;
 import tech.amcg.llf.domain.response.mapping.TubeLine;
 import tech.amcg.llf.domain.response.mapping.TubeStep;
 
@@ -12,16 +12,23 @@ public class TubeStepMapper {
 
     public TubeStepMapper() {}
 
-    public List<TubeStep> map(List<LegacyShortestPathResult> journey) {
+    public List<TubeStep> map(ShortestPathResult journey) {
         List<TubeStep> resultList = new ArrayList<>();
-        if(journey.size() < 2) {
-            return resultList;
+
+        if(journey.getSourceNodeName().equals(journey.getTargetNodeName())) {
+            resultList.add(new TubeStep(journey.getSourceNodeName(), journey.getTargetNodeName(), TubeLine.UNKNOWN, journey.getTotalCost()));
         }
-        Iterator<LegacyShortestPathResult> journeyIterator = journey.stream().iterator();
-        LegacyShortestPathResult startingStation = journeyIterator.next();
-        while(journeyIterator.hasNext()) {
-            LegacyShortestPathResult endStation = journeyIterator.next();
-            resultList.add(new TubeStep(startingStation.getName(), endStation.getName(), TubeLine.UNKNOWN, endStation.getCost().intValue() - startingStation.getCost().intValue()));
+
+        Iterator<String> journeyStationIterator = journey.getNodeNames().iterator();
+        Iterator<Double> journeyCostIterator = journey.getCosts().iterator();
+
+        String startingStation = journeyStationIterator.next();
+        Double stepCost = journeyCostIterator.next();
+
+        while(journeyStationIterator.hasNext()) {
+            String endStation = journeyStationIterator.next();
+            stepCost = journeyCostIterator.next();
+            resultList.add(new TubeStep(startingStation, endStation, TubeLine.UNKNOWN, stepCost));
             startingStation = endStation;
         }
         return resultList;

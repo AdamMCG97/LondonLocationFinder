@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tech.amcg.llf.domain.neo4j.LegacySingleSourceShortestPathResult;
-import tech.amcg.llf.domain.neo4j.LegacyShortestPathResult;
 import tech.amcg.llf.service.Neo4JRepositoryService;
 
 import java.util.List;

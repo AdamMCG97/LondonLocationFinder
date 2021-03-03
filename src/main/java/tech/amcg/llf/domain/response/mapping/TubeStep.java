@@ -9,9 +9,9 @@ public class TubeStep implements JourneyStep {
 
     private TubeLine tubeLine;
 
-    private int duration;
+    private Double duration;
 
-    public TubeStep(String startPoint, String endPoint, TubeLine tubeLine, int duration) {
+    public TubeStep(String startPoint, String endPoint, TubeLine tubeLine, Double duration) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.tubeLine = tubeLine;
@@ -34,7 +34,7 @@ public class TubeStep implements JourneyStep {
         return tubeLine;
     }
 
-    public int getDuration() {
+    public Double getDuration() {
         return duration;
     }
 }

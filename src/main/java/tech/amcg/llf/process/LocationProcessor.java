@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tech.amcg.llf.domain.exception.LLFException;
-import tech.amcg.llf.domain.neo4j.LegacyShortestPathResult;
+import tech.amcg.llf.domain.neo4j.ShortestPathResult;
 import tech.amcg.llf.domain.response.IndividualJourney;
 import tech.amcg.llf.domain.response.LLFResult;
 import tech.amcg.llf.domain.query.Person;
@@ -118,9 +118,9 @@ public class LocationProcessor {
         List<JourneyStep> resultSteps = new ArrayList<>();
         //add walk step between work location and closest station
         resultSteps.add(new SpecificWalkStep(person.getWorkLocation().getPostcode(), person.getNearestStations().get(0).getName(), person.getNearestStations().get(0).getWalkTime()));
-        List<LegacyShortestPathResult> detailedTubeJourney = neo4JRepositoryService.detailedJourneyBetween(person.getNearestStations().get(0).getName(), candidateStationName);
+        List<ShortestPathResult> detailedTubeJourney = neo4JRepositoryService.dijkstraDetailedJourneyBetween(person.getNearestStations().get(0).getName(), candidateStationName);
         //add all the tube stops between work station and candidate station
-        resultSteps.addAll(tubeStepMapper.map(detailedTubeJourney));
+        resultSteps.addAll(tubeStepMapper.map(detailedTubeJourney.get(0)));
         //add generic walk step from candidate station to anywhere within commute limit
         resultSteps.add(new VariableWalkStep(candidateStationName, person.getMaximumCommuteTime() - travelTime));
         return new JourneyDetails(resultSteps);

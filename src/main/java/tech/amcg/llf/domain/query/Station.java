@@ -1,5 +1,9 @@
 package tech.amcg.llf.domain.query;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class Station implements Location {
     private String name;
 
@@ -11,10 +15,6 @@ public class Station implements Location {
 
     private String naptanCode;
 
-    private String line;
-
-    public Station(){}
-
     public Station(String name){
         this.name = name;
     }
@@ -24,37 +24,5 @@ public class Station implements Location {
         this.latitude = latitude;
         this.longitude = longitude;
         this.naptanCode = naptanCode;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public String getNaptanCode() {
-        return naptanCode;
-    }
-
-    public String getLine() {
-        return line;
-    }
-
-    public int getWalkTime() {
-        return walkTime;
-    }
-
-    public void setWalkTime(int walkTime) {
-        this.walkTime = walkTime;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

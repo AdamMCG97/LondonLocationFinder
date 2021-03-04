@@ -32,8 +32,6 @@ public class NearbyStationsProcessor {
 
     private final TubeNameMapper tubeNameMapper;
 
-    private final Logger logger = LoggerFactory.getLogger(NearbyStationsProcessor.class);
-
     public NearbyStationsProcessor(ObjectMapper objectMapper, ApiRequestService apiRequestService, TubeNameMapper tubeNameMapper){
         this.objectMapper = objectMapper;
         this.apiRequestService = apiRequestService;

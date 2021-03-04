@@ -1,5 +1,7 @@
 package tech.amcg.llf.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,13 +21,37 @@ public class LLFController {
     @Autowired
     QueryProcessorService queryProcessorService;
 
+    ObjectMapper objectMapper = new ObjectMapper();
+
     @RequestMapping(method = RequestMethod.POST, value = "/llf")
-    public Response getLLFResults(@RequestBody Query query) throws Exception {
+    public Response getLLFResults(@RequestBody String jsonQuery) throws Exception {
+        Query query = objectMapper.readValue(jsonQuery, Query.class);
         return queryProcessorService.process(query);
     }
 
     @RequestMapping("/llfquery")
-    public Query getLLFQuery(){
-        return new Query(Arrays.asList(new Person( new WorkLocation("W2 6TT"), 40, "Ryan", 15), new Person(new WorkLocation("E14 5AH"), 30, "Adam", 10)), 2, 1500, 2000, true, Arrays.asList(1d,1.5d,2d));
+    public String getLLFQuery() throws JsonProcessingException {
+        Query sampleQuery = Query.builder()
+                .exclusionZones(Arrays.asList(1d,1.5d,2d))
+                .differentCommuteMaximums(true)
+                .personParamsList(Arrays.asList(
+                        Person.builder()
+                            .personID("Ryan")
+                            .workLocation(WorkLocation.builder().postcode("W2 6TT").build())
+                            .maximumCommuteTime(40)
+                            .maximumWalkTime(15)
+                            .build(),
+                        Person.builder()
+                            .personID("Adam")
+                            .workLocation(WorkLocation.builder().postcode("E14 5AH").build())
+                            .maximumCommuteTime(30)
+                            .maximumWalkTime(15)
+                            .build()))
+                .lowerBoundPriceRange(1500)
+                .upperBoundPriceRange(2000)
+                .numberOfBedrooms(2)
+                .build();
+
+        return objectMapper.writeValueAsString(sampleQuery);
     }
 }

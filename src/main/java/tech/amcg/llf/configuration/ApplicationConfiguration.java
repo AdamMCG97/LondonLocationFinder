@@ -13,13 +13,19 @@ import tech.amcg.llf.mapper.TubeNameMapper;
 public class ApplicationConfiguration {
 
     @Bean
-    public ApiRequestService requestMapper(){ return new ApiRequestService();}
+    public ApiRequestService requestMapper() {
+        return new ApiRequestService();
+    }
 
     @Bean
-    public TubeNameMapper tubeNameMapper() {return new TubeNameMapper();}
+    public TubeNameMapper tubeNameMapper() {
+        return new TubeNameMapper();
+    }
 
     @Bean
-    public TubeStepMapper tubeStepMapper() {return new TubeStepMapper();}
+    public TubeStepMapper tubeStepMapper() {
+        return new TubeStepMapper();
+    }
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -30,19 +36,4 @@ public class ApplicationConfiguration {
     public WebClient webClient() {
         return WebClient.create();
     }
-/*
-@Bean(value="queryProcessorService")
-public QueryProcessorService queryProcessorService() {
-    return new QueryProcessorService();
-}
-
-@Bean(value="nearbyStationsService")
-public NearbyStationsService nearbyStationsService(ObjectMapper objectMapper){
-    return new NearbyStationsService(objectMapper);
-}
-
-@Bean(value="locationEvaluationService")
-public LocationEvaluationService locationEvaluationService(){
-    return new LocationEvaluationService();
-}*/
 }

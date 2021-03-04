@@ -54,16 +54,12 @@
             <artifactId>neo4j-java-driver-spring-boot-starter</artifactId>
             <version>4.1.1.1</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.neo4j.driver</groupId>-->
-<!--            <artifactId>neo4j-java-driver-spring-boot-starter</artifactId>-->
-<!--            <version>4.0.2.1</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.neo4j</groupId>-->
-<!--            <artifactId>neo4j-ogm-http-driver</artifactId>-->
-<!--            <version>3.2.3</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.10</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>

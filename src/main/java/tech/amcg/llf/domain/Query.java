@@ -1,9 +1,18 @@
 package tech.amcg.llf.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import tech.amcg.llf.domain.query.Person;
 
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
+@Builder
 public class Query {
 
     private List<Person> personParamsList;
@@ -17,39 +26,4 @@ public class Query {
     private int upperBoundPriceRange;
 
     private boolean differentCommuteMaximums;
-
-    public Query(){}
-
-    public Query(List<Person> personParamsList, int numberOfBedrooms, int lowerBoundPriceRange, int upperBoundPriceRange, boolean differentCommuteMaximums, List<Double> exclusionZones) {
-        this.personParamsList = personParamsList;
-        this.numberOfBedrooms = numberOfBedrooms;
-        this.lowerBoundPriceRange = lowerBoundPriceRange;
-        this.upperBoundPriceRange = upperBoundPriceRange;
-        this.differentCommuteMaximums = differentCommuteMaximums;
-        this.exclusionZones = exclusionZones;
-    }
-
-    public List<Person> getPersonParamsList() {
-        return personParamsList;
-    }
-
-    public int getNumberOfBedrooms() {
-        return numberOfBedrooms;
-    }
-
-    public int getLowerBoundPriceRange() {
-        return lowerBoundPriceRange;
-    }
-
-    public int getUpperBoundPriceRange() {
-        return upperBoundPriceRange;
-    }
-
-    public boolean hasDifferentCommuteMaximums() {
-        return differentCommuteMaximums;
-    }
-
-    public List<Double> getExclusionZones() {
-        return exclusionZones;
-    }
 }

@@ -42,10 +42,11 @@ public interface TubeRepository extends Neo4jRepository<Tube, Long> {
             "    index,\n" +
             "    gds.util.asNode(sourceNode).name AS sourceNodeName,\n" +
             "    gds.util.asNode(targetNode).name AS targetNodeName,\n" +
+            "    gds.util.asNode(targetNode).zone AS zone,\n" +
             "    totalCost,\n" +
             "    [nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS nodeNames,\n" +
             "    costs\n" +
-            "ORDER BY index")
+            "ORDER BY index;")
     List<SingleSourceShortestPathResult> dijkstraDistanceToAllStations(@Param("name") String name);
 
     @Query("MATCH (source:Station {name: $firstStation}), (target:Station {name: $secondStation})\n" +
@@ -64,5 +65,22 @@ public interface TubeRepository extends Neo4jRepository<Tube, Long> {
             "    costs\n" +
             "ORDER BY index")
     List<ShortestPathResult> dijkstraDetailedJourneyBetween(@Param("firstStation") String firstStation, @Param("secondStation") String secondStation);
+
+    @Query("MATCH (source:Station {name: $firstStation}), (target:Station {name: $secondStation})\n" +
+            "CALL gds.beta.shortestPath.dijkstra.stream('tubeGraph', { \n" +
+            "    sourceNode: id(source),\n" +
+            "    targetNode: id(target),\n" +
+            "    relationshipWeightProperty: 'line'\n" +
+            "})\n" +
+            "YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs\n" +
+            "RETURN\n" +
+            "    index,\n" +
+            "    gds.util.asNode(sourceNode).name AS sourceNodeName,\n" +
+            "    gds.util.asNode(targetNode).name AS targetNodeName,\n" +
+            "    totalCost,\n" +
+            "    [nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS nodeNames,\n" +
+            "    costs\n" +
+            "ORDER BY index")
+    List<ShortestPathResult> dijkstraDetailedJourneyByTubeLine(@Param("firstStation") String firstStation, @Param("secondStation") String secondStation);
 
 }

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import tech.amcg.llf.domain.query.Person;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter @Setter
 @Builder
+@ToString
 public class Query {
 
     private List<Person> personParamsList;

@@ -37,8 +37,13 @@ public class Neo4JRepositoryService {
     }
 
     public List<ShortestPathResult> dijkstraDetailedJourneyBetween(String firstStation, String secondStation) {
-        log.debug(String.format("Received query for detailedJourneyBetween start: %s & end: %s", firstStation, secondStation));
+        log.debug(String.format("Received query for detailedJourneyBetween. start: %s & end: %s", firstStation, secondStation));
         return tubeRepository.dijkstraDetailedJourneyBetween(firstStation, secondStation);
+    }
+
+    public List<ShortestPathResult> dijkstraDetailedJourneyByTubeLine(String firstStation, String secondStation) {
+        log.debug(String.format("Received query for detailedJourneyByTubeLine. start: %s & end: %s", firstStation, secondStation));
+        return tubeRepository.dijkstraDetailedJourneyByTubeLine(firstStation, secondStation);
     }
 
 }

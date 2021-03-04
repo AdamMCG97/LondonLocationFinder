@@ -5,7 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import tech.amcg.llf.domain.neo4j.LegacySingleSourceShortestPathResult;
+import lombok.ToString;
+import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@ToString
 public class Person {
 
     private String personID;
@@ -26,6 +28,10 @@ public class Person {
 
     private List<Station> nearestStations;
 
-    private List<LegacySingleSourceShortestPathResult> solutionCandidates;
+    private List<SingleSourceShortestPathResult> solutionCandidates;
 
+    public void updateSolutionCandidate(SingleSourceShortestPathResult oldCandidate, SingleSourceShortestPathResult newCandidate) {
+        solutionCandidates.remove(oldCandidate);
+        solutionCandidates.add(newCandidate);
+    }
 }

@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import tech.amcg.llf.domain.query.WorkLocation;
 import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.Query;
-import tech.amcg.llf.domain.Response;
+import tech.amcg.llf.domain.response.LLFResult;
 import tech.amcg.llf.service.QueryProcessorService;
 
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 public class LLFController {
@@ -24,7 +25,7 @@ public class LLFController {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @RequestMapping(method = RequestMethod.POST, value = "/llf")
-    public Response getLLFResults(@RequestBody String jsonQuery) throws Exception {
+    public List<LLFResult> getLLFResults(@RequestBody String jsonQuery) throws Exception {
         Query query = objectMapper.readValue(jsonQuery, Query.class);
         return queryProcessorService.process(query);
     }

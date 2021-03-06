@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tech.amcg.llf.domain.neo4j.ShortestPathResult;
-import tech.amcg.llf.domain.neo4j.LegacySingleSourceShortestPathResult;
 import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
 import tech.amcg.llf.service.Neo4JRepositoryService;
 
@@ -19,9 +18,14 @@ public class Neo4JController {
     @Autowired
     Neo4JRepositoryService neo4JRepositoryService;
 
-    @GetMapping("/allstations")
+    @GetMapping("/allstations/withoutparams")
     public List<SingleSourceShortestPathResult> getDistanceToAllStations(@RequestParam(value = "name") String name) {
         return neo4JRepositoryService.dijkstraDistanceToAllStations(name);
+    }
+
+    @GetMapping("/allstations/withparams")
+    public List<SingleSourceShortestPathResult> getDistanceToAllStationsWithParams(@RequestParam(value = "name") String name, @RequestParam("zones") List<Double> zones, @RequestParam("maxTime") Integer maxTime) {
+        return neo4JRepositoryService.dijkstraDistanceToAllStations(name, zones, maxTime);
     }
 
     @GetMapping("/detailedjourney")

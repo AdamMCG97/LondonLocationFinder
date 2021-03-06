@@ -1,7 +1,10 @@
 package tech.amcg.llf.mapper;
 
 import lombok.NoArgsConstructor;
-import tech.amcg.llf.domain.neo4j.ShortestPathResult;
+import lombok.extern.slf4j.Slf4j;
+import tech.amcg.llf.domain.exception.LLFException;
+import tech.amcg.llf.domain.neo4j.LineDataResult;
+import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
 import tech.amcg.llf.domain.response.mapping.JourneyStep;
 import tech.amcg.llf.domain.response.mapping.SpecificWalkStep;
 import tech.amcg.llf.domain.response.mapping.TubeLine;
@@ -11,35 +14,27 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static tech.amcg.llf.process.LocationProcessor.STANDARD_TIME_PER_LINE_CHANGE;
+
 @NoArgsConstructor
+@Slf4j
 public class TubeStepMapper {
 
-    public List<JourneyStep> map(ShortestPathResult journey, int travelTime) {
+    public List<JourneyStep> map(SingleSourceShortestPathResult path) throws LLFException {
         List<JourneyStep> resultList = new ArrayList<>();
 
-        if(journey.getSourceNodeName().equals(journey.getTargetNodeName())) {
-            return resultList;
-        }
+        Iterator<LineDataResult> pathIterator = path.getLineData().iterator();
 
-        Iterator<String> journeyStationIterator = journey.getNodeNames().iterator();
-        Iterator<Double> journeyCostIterator = journey.getCosts().iterator();
-
-        String startingStation = journeyStationIterator.next();
-        Double stepLineId = journeyCostIterator.next();
-        Double cumulativeStepIds = stepLineId;
         TubeLine currentLine;
         TubeLine previousLine = TubeLine.UNKNOWN;
 
-        while(journeyStationIterator.hasNext()) {
-            String endStation = journeyStationIterator.next();
-            stepLineId = journeyCostIterator.next() - cumulativeStepIds;
-            cumulativeStepIds += stepLineId;
-            currentLine = TubeLine.getById(stepLineId);
+        while(pathIterator.hasNext()) {
+            LineDataResult pathStep = pathIterator.next();
+            currentLine = TubeLine.getById(pathStep.getLine().doubleValue());
             if(previousLine != TubeLine.UNKNOWN && currentLine != previousLine) {
-                resultList.add(new SpecificWalkStep(previousLine.getFullName(), currentLine.getFullName(), 3));
+                resultList.add(new SpecificWalkStep(previousLine.getFullName(), currentLine.getFullName(), STANDARD_TIME_PER_LINE_CHANGE.intValue()));
             }
-            resultList.add(new TubeStep(startingStation, endStation, currentLine, 0d));
-            startingStation = endStation;
+            resultList.add(new TubeStep(pathStep.getStartNodeName(), pathStep.getEndNodeName(), currentLine, pathStep.getTime().doubleValue()));
             previousLine = currentLine;
         }
         return resultList;

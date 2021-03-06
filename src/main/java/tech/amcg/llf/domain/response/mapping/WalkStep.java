@@ -1,7 +1,9 @@
 package tech.amcg.llf.domain.response.mapping;
 
+import static tech.amcg.llf.domain.response.mapping.stepType.WALK;
+
 public class WalkStep implements JourneyStep {
-    private final JourneyType journeyType = JourneyType.WALK;
+    private final stepType stepType = WALK;
 
     private final String startPoint;
 
@@ -12,8 +14,8 @@ public class WalkStep implements JourneyStep {
         this.endPoint = endPoint;
     }
 
-    public JourneyType getJourneyType() {
-        return journeyType;
+    public stepType getStepType() {
+        return stepType;
     }
 
     public String getStartPoint() {

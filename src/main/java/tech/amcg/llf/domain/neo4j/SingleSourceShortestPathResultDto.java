@@ -1,22 +1,23 @@
 package tech.amcg.llf.domain.neo4j;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
 import lombok.ToString;
+import org.springframework.data.neo4j.annotation.QueryResult;
 
 import java.util.List;
 
-@Getter @AllArgsConstructor @Builder @ToString @Setter
-public class SingleSourceShortestPathResult {
+@QueryResult
+@Getter @AllArgsConstructor @Builder @ToString
+public class SingleSourceShortestPathResultDto {
 
     long index;
     String sourceNodeName;
     String targetNodeName;
     Double zone;
     Double totalCost;
-    List<LineDataResult> lineData;
+    Iterable<List<Object>> lineData;
     List<String> nodeNames;
     List<Double> costs;
 

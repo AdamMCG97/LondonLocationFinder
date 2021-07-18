@@ -1,30 +1,48 @@
 package tech.amcg.llf.service;
 
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Slf4j
+@NoArgsConstructor
 public class ApiRequestService {
 
-    private static final String hereApiKey = System.getenv("HERE_API_KEY");
-    private static final String transportApiKey = System.getenv("TRANSPORT_API_KEY");
+    @Value("${llf.api.here.key}")
+    String hereApiKey;
+
+    @Value("${llf.api.transport.key}")
+    String transportApiKey;
+
+    @Value("${llf.api.here.uri}")
+    String hereApiBaseUri;
+
+    @Value("${llf.api.transport.uri}")
+    String transportApiBaseUri;
 
     @Autowired
     WebClient webClient;
 
-    public ApiRequestService(){}
+    private static final String transportApiPath = "/uk/tube/stations/near.json";
 
-    public String getHereApiRequestUrl(String startLat, String startLong, String endLat, String endLong){
-        return String.format("https://router.hereapi.com/v8/routes?transportMode=pedestrian&origin=%s,%s&destination=%s,%s&return=summary&apiKey=%s",
-                startLat, startLong, endLat, endLong, hereApiKey);
+    private static final String hereApiPath = "/routes";
+
+    public String getHereApiRequestUrl(String startLat, String startLong, String endLat, String endLong) {
+        return String.format("%s%s?transportMode=pedestrian&origin=%s,%s&destination=%s,%s&return=summary&apiKey=%s",
+                hereApiBaseUri, hereApiPath, startLat, startLong, endLat, endLong, hereApiKey);
     }
 
-    public String getTransportApiRequestUrl(String lat, String lon){
-        return String.format("http://transportapi.com/v3/uk/tube/stations/near.json?lat=%s&lon=%s&page=1&rpp=1&app_id=bf215419&app_key=%s",
-                lat, lon, transportApiKey);
+    public String getTransportApiRequestUrl(String lat, String lon) {
+        return String.format("%s%s?lat=%s&lon=%s&page=1&rpp=1&app_id=bf215419&app_key=%s",
+                transportApiBaseUri, transportApiPath, lat, lon, transportApiKey);
     }
 
-    public String get(String url) {
+    public String getString(String url) {
+
+        log.debug(String.format("Making GET request to url: %s", url));
 
         return webClient.method(HttpMethod.GET)
                 .uri(url)

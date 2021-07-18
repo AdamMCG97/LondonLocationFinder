@@ -1,9 +1,9 @@
 package tech.amcg.llf.domain.response.mapping;
 
-import static tech.amcg.llf.domain.response.mapping.stepType.TUBE;
+import static tech.amcg.llf.domain.response.mapping.StepType.TUBE;
 
 public class TubeStep implements JourneyStep {
-    private stepType stepType = TUBE;
+    private StepType stepType = TUBE;
 
     private String startPoint;
 
@@ -20,7 +20,7 @@ public class TubeStep implements JourneyStep {
         this.duration = duration;
     }
 
-    public stepType getStepType() {
+    public StepType getStepType() {
         return stepType;
     }
 

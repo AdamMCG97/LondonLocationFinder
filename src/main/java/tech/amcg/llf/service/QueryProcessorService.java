@@ -25,7 +25,7 @@ public class QueryProcessorService {
     @Autowired
     private LocationProcessor locationProcessor;
 
-    public List<LLFResult> process(Query query) throws LLFException, UnirestException {
+    public List<LLFResult> process(Query query) throws LLFException {
         log.debug(String.format("Received query: %s", query.toString()));
 
         nearbyStationsProcessor.process(query);

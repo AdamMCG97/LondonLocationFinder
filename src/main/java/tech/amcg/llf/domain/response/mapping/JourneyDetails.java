@@ -16,6 +16,6 @@ public class JourneyDetails {
 
 }
 
-enum stepType {
+enum StepType {
     TUBE, WALK;
 }

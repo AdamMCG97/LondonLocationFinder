@@ -2,11 +2,13 @@ package tech.amcg.llf.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import tech.amcg.llf.domain.exception.LLFException;
 import tech.amcg.llf.domain.query.WorkLocation;
 import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.Query;
@@ -25,7 +27,7 @@ public class LLFController {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @RequestMapping(method = RequestMethod.POST, value = "/llf")
-    public List<LLFResult> getLLFResults(@RequestBody String jsonQuery) throws Exception {
+    public List<LLFResult> getLLFResults(@RequestBody String jsonQuery) throws JsonProcessingException, LLFException, UnirestException {
         Query query = objectMapper.readValue(jsonQuery, Query.class);
         return queryProcessorService.process(query);
     }

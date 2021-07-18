@@ -1,6 +1,7 @@
 package tech.amcg.llf.domain.exception;
 
 public class LLFException extends Exception {
+
     public LLFException(String errorMessage) {
         super(errorMessage);
     }

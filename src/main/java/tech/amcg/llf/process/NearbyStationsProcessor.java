@@ -8,8 +8,7 @@ import com.postcode.io.initializers.PostcodeLookup;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.control.Try;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tech.amcg.llf.domain.exception.LLFException;
 import tech.amcg.llf.domain.query.WorkLocation;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@Slf4j
 @Service
 public class NearbyStationsProcessor {
 
@@ -38,7 +38,7 @@ public class NearbyStationsProcessor {
         this.tubeNameMapper = tubeNameMapper;
     }
 
-    public void process(Query query) throws UnirestException, LLFException {
+    public void process(Query query) throws LLFException {
         enrichLocationData(query.getPersonParamsList());
         getNearestStationNames(query.getPersonParamsList());
         getClosestStationsByWalk(query.getPersonParamsList());
@@ -62,15 +62,24 @@ public class NearbyStationsProcessor {
         return stationList;
     }
 
-    private int getWalkingTimeFromStation(Station station, WorkLocation distanceFrom) throws JsonProcessingException {
+    private int getWalkingTimeFromStation(Station station, WorkLocation distanceFrom) throws LLFException {
         String url = apiRequestService.getHereApiRequestUrl(distanceFrom.getLatitude(), distanceFrom.getLongitude(), station.getLatitude(), station.getLongitude());
-        String response = apiRequestService.get(url);
+        String response = apiRequestService.getString(url);
+        JsonNode responseAsJson;
 
-        if(null == response) {
+/*        if(null == response) {
             return Integer.MAX_VALUE;
+        }*/
+
+        try {
+            responseAsJson = objectMapper.readTree(response);
+        } catch (JsonProcessingException ex) {
+            throw new LLFException(
+                    String.format("Error Reading Json Response: %s",
+                            ex.getMessage()),
+                    ex);
         }
 
-        JsonNode responseAsJson = objectMapper.readTree(response);
         return Math.round(extractTimeFromJson(responseAsJson) / 60f);
     }
 
@@ -78,20 +87,34 @@ public class NearbyStationsProcessor {
         return Try.of(() -> responseAsJson.findParent("duration").get("duration").asInt()).getOrNull();
     }
 
-    private void getNearestStationNames(List<Person> personList){
+    private void getNearestStationNames(List<Person> personList) throws LLFException {
         personList.forEach(person -> Try.of(() -> findNearestStations(person.getWorkLocation().getLatitude(), person.getWorkLocation().getLongitude()))
-                .onSuccess(person::setNearestStations));
+                .onSuccess(person::setNearestStations)
+        );
+        for (Person person : personList) {
+            if(null == person.getNearestStations() || person.getNearestStations().size() == 0) {
+                throw new LLFException(String.format("No Stations found for person: %s", person.toString()));
+            }
+        }
     }
 
-    private List<Station> findNearestStations(String latitude, String longitude) throws JsonProcessingException {
+    private List<Station> findNearestStations(String latitude, String longitude) throws LLFException {
         String url = apiRequestService.getTransportApiRequestUrl(latitude, longitude);
-        String response = apiRequestService.get(url);
+        String response = apiRequestService.getString(url);
+        JsonNode responseAsJson;
 
-        if(null == response) {
+/*        if(null == response) {
             return new ArrayList<>();
-        }
+        }*/
 
-        JsonNode responseAsJson = objectMapper.readTree(response);
+        try {
+            responseAsJson = objectMapper.readTree(response);
+        } catch (JsonProcessingException ex) {
+            throw new LLFException(
+                    String.format("Error Reading Json Response: %s",
+                            ex.getMessage()),
+                    ex);
+        }
         return extractStationsFromJson(responseAsJson);
     }
 
@@ -113,13 +136,21 @@ public class NearbyStationsProcessor {
         return firstPart + secondPart;
     }
 
-    private void enrichLocationData(List<Person> personList) throws UnirestException, LLFException {
+    private void enrichLocationData(List<Person> personList) throws LLFException {
         for (Person person : personList) {
-            if (!PostcodeLookup.isValid(person.getWorkLocation().getPostcode())) {
-                throw new LLFException(String.format("Invalid postcode: %s", person.getWorkLocation().getPostcode()));
+            try {
+                if (!PostcodeLookup.isValid(person.getWorkLocation().getPostcode())) {
+                    throw new LLFException(String.format("Invalid postcode: %s", person.getWorkLocation().getPostcode()));
+                }
+            } catch (UnirestException ex) {
+                throw new LLFException(
+                        String.format("Error Validating Postcode: %s",
+                                ex.getMessage()),
+                        ex);
             }
         }
-        personList.forEach(person -> Try.of(() -> getLatAndLong(person.getWorkLocation()))
+        personList.forEach(person ->
+                Try.of(() -> getLatAndLong(person.getWorkLocation()))
                 .onSuccess(latAndLong -> person.getWorkLocation().setLatitude(latAndLong._1))
                 .onSuccess(latAndLong -> person.getWorkLocation().setLongitude(latAndLong._2)));
     }

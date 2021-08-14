@@ -1,6 +1,5 @@
 package tech.amcg.llf.service;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

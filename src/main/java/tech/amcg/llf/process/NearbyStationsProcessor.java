@@ -15,7 +15,7 @@ import tech.amcg.llf.domain.query.WorkLocation;
 import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.Query;
 import tech.amcg.llf.domain.query.Station;
-import tech.amcg.llf.mapper.TubeNameMapper;
+import tech.amcg.llf.mapper.StationNameMapper;
 import tech.amcg.llf.service.ApiRequestService;
 
 import java.util.ArrayList;
@@ -30,12 +30,12 @@ public class NearbyStationsProcessor {
 
     private final ObjectMapper objectMapper;
 
-    private final TubeNameMapper tubeNameMapper;
+    private final StationNameMapper stationNameMapper;
 
-    public NearbyStationsProcessor(ObjectMapper objectMapper, ApiRequestService apiRequestService, TubeNameMapper tubeNameMapper){
+    public NearbyStationsProcessor(ObjectMapper objectMapper, ApiRequestService apiRequestService, StationNameMapper stationNameMapper){
         this.objectMapper = objectMapper;
         this.apiRequestService = apiRequestService;
-        this.tubeNameMapper = tubeNameMapper;
+        this.stationNameMapper = stationNameMapper;
     }
 
     public void process(Query query) throws LLFException {
@@ -56,7 +56,7 @@ public class NearbyStationsProcessor {
                 .onSuccess(station::setWalkTime)
                 .onSuccess(time -> stationList.add(station)));
 
-        stationList.forEach(tubeNameMapper::map);
+        stationList.forEach(stationNameMapper::mapTransportApiStationNameToNeo4jStationName);
 
         stationList.sort(Comparator.comparingInt(Station::getWalkTime));
         return stationList;

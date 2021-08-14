@@ -8,7 +8,7 @@ import tech.amcg.llf.mapper.QueryPathTrimmer;
 import tech.amcg.llf.mapper.ResponseMapper;
 import tech.amcg.llf.mapper.TubeStepMapper;
 import tech.amcg.llf.service.ApiRequestService;
-import tech.amcg.llf.mapper.TubeNameMapper;
+import tech.amcg.llf.mapper.StationNameMapper;
 
 
 @Configuration
@@ -20,8 +20,8 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public TubeNameMapper tubeNameMapper() {
-        return new TubeNameMapper();
+    public StationNameMapper tubeNameMapper() {
+        return new StationNameMapper();
     }
 
     @Bean

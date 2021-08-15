@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tech.amcg.llf.domain.exception.LLFException;
 import tech.amcg.llf.domain.query.WorkLocation;
 import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.Query;
 import tech.amcg.llf.domain.response.LLFResult;
-import tech.amcg.llf.service.QueryProcessorService;
+import tech.amcg.llf.service.LLFService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,14 +23,20 @@ import java.util.List;
 public class LLFController {
 
     @Autowired
-    QueryProcessorService queryProcessorService;
+    LLFService LLFService;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    ObjectMapper objectMapper;
 
     @RequestMapping(method = RequestMethod.POST, value = "/llf")
     public List<LLFResult> getLLFResults(@RequestBody String jsonQuery) throws JsonProcessingException, LLFException, UnirestException {
         Query query = objectMapper.readValue(jsonQuery, Query.class);
-        return queryProcessorService.process(query);
+        return LLFService.processQuery(query);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/validatepostcode")
+    public String validatePostcode(@RequestParam String postcode) throws LLFException {
+        return LLFService.validatePostcode(postcode) ? "True" : "False";
     }
 
     @RequestMapping("/llfquery")

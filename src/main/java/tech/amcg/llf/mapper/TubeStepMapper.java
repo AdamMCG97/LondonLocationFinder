@@ -2,7 +2,6 @@ package tech.amcg.llf.mapper;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import tech.amcg.llf.domain.exception.LLFException;
 import tech.amcg.llf.domain.neo4j.LineDataResult;
 import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
 import tech.amcg.llf.domain.response.mapping.JourneyStep;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static tech.amcg.llf.process.LocationProcessor.STANDARD_TIME_PER_LINE_CHANGE;
+import static tech.amcg.llf.process.TubeMapProcessor.STANDARD_TIME_PER_LINE_CHANGE;
 
 @NoArgsConstructor
 @Slf4j

@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.postcode.io.initializers.PostcodeLookup;
-import io.vavr.Tuple;
-import io.vavr.Tuple2;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +23,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class NearbyStationsProcessor {
+public class WorkLocationProcessor {
 
     private final ApiRequestService apiRequestService;
 
@@ -33,13 +31,13 @@ public class NearbyStationsProcessor {
 
     private final StationNameMapper stationNameMapper;
 
-    public NearbyStationsProcessor(ObjectMapper objectMapper, ApiRequestService apiRequestService, StationNameMapper stationNameMapper){
+    public WorkLocationProcessor(ObjectMapper objectMapper, ApiRequestService apiRequestService, StationNameMapper stationNameMapper){
         this.objectMapper = objectMapper;
         this.apiRequestService = apiRequestService;
         this.stationNameMapper = stationNameMapper;
     }
 
-    public void process(Query query) throws LLFException {
+    public void findNearestStationsByWalkingDistance(Query query) throws LLFException {
         enrichLocationData(query.getPersonParamsList());
         getNearestStationNames(query.getPersonParamsList());
         getClosestStationsByWalk(query.getPersonParamsList());
@@ -68,10 +66,6 @@ public class NearbyStationsProcessor {
         String response = apiRequestService.getString(url);
         JsonNode responseAsJson;
 
-/*        if(null == response) {
-            return Integer.MAX_VALUE;
-        }*/
-
         try {
             responseAsJson = objectMapper.readTree(response);
         } catch (JsonProcessingException ex) {
@@ -81,10 +75,16 @@ public class NearbyStationsProcessor {
                     ex);
         }
 
-        return Math.round(extractTimeFromJson(responseAsJson) / 60f);
+        Integer walkTime = extractTimeFromJson(responseAsJson);
+
+        if(null == walkTime) {
+            throw new LLFException(String.format("Walk Time Not Found In Json Response: %s", responseAsJson.toPrettyString()));
+        }
+
+        return walkTime > 0 ? Math.round(walkTime / 60f) : walkTime;
     }
 
-    private int extractTimeFromJson(JsonNode responseAsJson) {
+    private Integer extractTimeFromJson(JsonNode responseAsJson) {
         return Try.of(() -> responseAsJson.findParent("duration").get("duration").asInt()).getOrNull();
     }
 
@@ -104,10 +104,6 @@ public class NearbyStationsProcessor {
         String url = apiRequestService.getTransportApiRequestUrl(latitudeAndLongitude);
         String response = apiRequestService.getString(url);
         JsonNode responseAsJson;
-
-/*        if(null == response) {
-            return new ArrayList<>();
-        }*/
 
         try {
             responseAsJson = objectMapper.readTree(response);
@@ -137,25 +133,33 @@ public class NearbyStationsProcessor {
 
     private void enrichLocationData(List<Person> personList) throws LLFException {
         for (Person person : personList) {
-            try {
-                if (!PostcodeLookup.isValid(person.getWorkLocation().getPostcode())) {
-                    throw new LLFException(String.format("Invalid postcode: %s", person.getWorkLocation().getPostcode()));
-                }
-            } catch (UnirestException ex) {
-                throw new LLFException(
-                        String.format("Error Validating Postcode: %s",
-                                ex.getMessage()),
-                        ex);
+            //From UI, validity should be handled as user inputs postcode and prior to query being submitted
+            //added validity check here for requests that don't originate from the UI, i.e. postman prototype
+            if(!isValidPostcode(person.getWorkLocation().getPostcode())) {
+                throw new LLFException(String.format("Invalid Postcode: %s", person.getWorkLocation().getPostcode()));
             }
         }
         personList.forEach(person ->
                 Try.of(() -> getLatAndLong(person.getWorkLocation()))
                 .onSuccess(latAndLong -> person.getWorkLocation().setPoint(latAndLong))
+                .onFailure(Throwable::printStackTrace)
         );
     }
 
-    private Point getLatAndLong(WorkLocation workLocation) throws Exception {
-        JsonNode lookupResult = objectMapper.readTree(PostcodeLookup.postcode(workLocation.getPostcode()).asJson().get("result").toString());
-        return new Point(lookupResult.get("latitude").toString(), lookupResult.get("longitude").toString());
+    public boolean isValidPostcode(String postcode) throws LLFException {
+        try {
+            return PostcodeLookup.isValid(postcode);
+        } catch (UnirestException ex) {
+            throw new LLFException(String.format("Error Validating Postcode: %s", ex.getMessage()), ex);
+        }
+    }
+
+    private Point getLatAndLong(WorkLocation workLocation) throws LLFException {
+        try {
+            JsonNode postcodeLookup = objectMapper.readTree(PostcodeLookup.postcode(workLocation.getPostcode()).asJson().get("result").toString());
+            return new Point(postcodeLookup.get("latitude").toString(), postcodeLookup.get("longitude").toString());
+        } catch (Exception ex) {
+            throw new LLFException(String.format("Error Looking Up Postcode: %s", ex.getMessage()), ex);
+        }
     }
 }

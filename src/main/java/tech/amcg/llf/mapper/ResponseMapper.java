@@ -12,7 +12,7 @@ import tech.amcg.llf.domain.response.mapping.JourneyDetails;
 import tech.amcg.llf.domain.response.mapping.JourneyStep;
 import tech.amcg.llf.domain.response.mapping.SpecificWalkStep;
 import tech.amcg.llf.domain.response.mapping.VariableWalkStep;
-import tech.amcg.llf.process.LocationProcessor;
+import tech.amcg.llf.process.ResultsProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class ResponseMapper {
         });
 
         Double averageTime = totalTravelTime.updateAndGet(v -> v / personList.size());
-        Double zone = LocationProcessor.findElementInListByString(personList.get(0).getSolutionCandidates(), stationName).getZone();
+        Double zone = ResultsProcessor.findElementInListByString(personList.get(0).getAcceptablePaths(), stationName).getZone();
 
         return LLFResult.builder()
                 .name(stationName)
@@ -53,14 +53,14 @@ public class ResponseMapper {
     }
 
     private IndividualJourney buildJourneyForPerson(Person person, String stationName) {
-        SingleSourceShortestPathResult journey = LocationProcessor.findElementInListByString(person.getSolutionCandidates(), stationName);
+        SingleSourceShortestPathResult journey = ResultsProcessor.findElementInListByString(person.getAcceptablePaths(), stationName);
         Double travelTime = journey.getTotalCost() + person.getNearestStations().get(0).getWalkTime();
 
         if(travelTime > maximumTravelTime.get()) {
             maximumTravelTime.getAndUpdate( v -> travelTime);
         }
         totalTravelTime.updateAndGet(v -> v + travelTime);
-        JourneyDetails journeyDetails = getJourneyDetails(person, journey, travelTime);
+        JourneyDetails journeyDetails = getDetailedJourney(person, journey, travelTime.intValue());
 
         return IndividualJourney.builder()
                 .personID(person.getPersonID())
@@ -70,16 +70,7 @@ public class ResponseMapper {
                 .build();
     }
 
-    private JourneyDetails getJourneyDetails(Person person, SingleSourceShortestPathResult journey, Double travelTime) {
-        try {
-            return getDetailedJourney(person, journey, travelTime.intValue());
-        } catch (LLFException e) {
-            log.error(String.format("Getting journey details failed. Error: %s", e.getMessage()));
-        }
-        return null;
-    }
-
-    private JourneyDetails getDetailedJourney(Person person, SingleSourceShortestPathResult journey, int travelTime) throws LLFException {
+    private JourneyDetails getDetailedJourney(Person person, SingleSourceShortestPathResult journey, int travelTime) {
         List<JourneyStep> resultSteps = new ArrayList<>();
         //add walk step between work location and closest station
         resultSteps.add(new SpecificWalkStep(person.getWorkLocation().getPostcode(), person.getNearestStations().get(0).getName(), person.getNearestStations().get(0).getWalkTime()));
@@ -87,6 +78,7 @@ public class ResponseMapper {
         resultSteps.addAll(tubeStepMapper.map(journey));
         //add generic walk step from candidate station to anywhere within commute limit
         resultSteps.add(new VariableWalkStep(journey.getTargetNodeName(), person.getMaximumCommuteTime() - travelTime));
+
         return new JourneyDetails(resultSteps);
     }
 

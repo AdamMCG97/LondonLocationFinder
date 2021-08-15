@@ -28,6 +28,6 @@ public class Person {
 
     private List<Station> nearestStations;
 
-    private List<SingleSourceShortestPathResult> solutionCandidates;
+    private List<SingleSourceShortestPathResult> acceptablePaths;
 
 }

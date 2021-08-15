@@ -20,7 +20,7 @@ import static tech.amcg.llf.process.LocationProcessor.STANDARD_TIME_PER_LINE_CHA
 @Slf4j
 public class TubeStepMapper {
 
-    public List<JourneyStep> map(SingleSourceShortestPathResult path) throws LLFException {
+    public List<JourneyStep> map(SingleSourceShortestPathResult path) {
         List<JourneyStep> resultList = new ArrayList<>();
 
         Iterator<LineDataResult> pathIterator = path.getLineData().iterator();

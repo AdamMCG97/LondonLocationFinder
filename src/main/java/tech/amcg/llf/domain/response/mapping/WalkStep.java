@@ -1,29 +1,21 @@
 package tech.amcg.llf.domain.response.mapping;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
 import static tech.amcg.llf.domain.response.mapping.StepType.WALK;
 
+@RequiredArgsConstructor
+@Getter
 public class WalkStep implements JourneyStep {
+
     private final StepType stepType = WALK;
 
+    @NonNull
     private final String startPoint;
 
+    @NonNull
     private final String endPoint;
-
-    public WalkStep(String startPoint, String endPoint) {
-        this.startPoint = startPoint;
-        this.endPoint = endPoint;
-    }
-
-    public StepType getStepType() {
-        return stepType;
-    }
-
-    public String getStartPoint() {
-        return startPoint;
-    }
-
-    public String getEndPoint() {
-        return endPoint;
-    }
 
 }

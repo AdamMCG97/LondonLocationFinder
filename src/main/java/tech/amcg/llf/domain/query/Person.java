@@ -30,8 +30,4 @@ public class Person {
 
     private List<SingleSourceShortestPathResult> solutionCandidates;
 
-/*    public void updateSolutionCandidate(SingleSourceShortestPathResult oldCandidate, SingleSourceShortestPathResult newCandidate) {
-        solutionCandidates.remove(oldCandidate);
-        solutionCandidates.add(newCandidate);
-    }*/
 }

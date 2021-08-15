@@ -1,44 +1,24 @@
 package tech.amcg.llf.domain.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+
 import java.util.List;
 
+@Builder
+@Getter
+@AllArgsConstructor
 public class LLFResult {
 
-    private String name;
+    private final String name;
 
-    private List<IndividualJourney> individualJourneys;
+    private final List<IndividualJourney> individualJourneys;
 
-    private Double averageTravelTime;
+    private final Double averageTravelTime;
 
-    private Double maximumTravelTime;
+    private final Double maximumTravelTime;
 
-    private Double zone;
+    private final Double zone;
 
-    public LLFResult(String name, List<IndividualJourney> individualJourneys, Double averageTravelTime, Double zone, Double maximumTravelTime) {
-        this.name = name;
-        this.individualJourneys = individualJourneys;
-        this.averageTravelTime = averageTravelTime;
-        this.zone = zone;
-        this.maximumTravelTime = maximumTravelTime;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public List<IndividualJourney> getIndividualJourneys() {
-        return individualJourneys;
-    }
-
-    public Double getZone() {
-        return zone;
-    }
-
-    public Double getAverageTravelTime() {
-        return averageTravelTime;
-    }
-
-    public Double getMaximumTravelTime() {
-        return maximumTravelTime;
-    }
 }

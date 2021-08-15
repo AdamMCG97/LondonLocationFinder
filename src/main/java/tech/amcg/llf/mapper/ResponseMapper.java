@@ -36,17 +36,23 @@ public class ResponseMapper {
         maximumTravelTime = new AtomicReference<>(0d);
 
         personList.forEach( person -> {
-            IndividualJourney journeyForPerson = getJourneyForPerson(person, stationName);
+            IndividualJourney journeyForPerson = buildJourneyForPerson(person, stationName);
             individualJourneys.add(journeyForPerson);
         });
 
         Double averageTime = totalTravelTime.updateAndGet(v -> v / personList.size());
         Double zone = LocationProcessor.findElementInListByString(personList.get(0).getSolutionCandidates(), stationName).getZone();
 
-        return new LLFResult(stationName, individualJourneys, averageTime, zone, maximumTravelTime.get());
+        return LLFResult.builder()
+                .name(stationName)
+                .individualJourneys(individualJourneys)
+                .averageTravelTime(averageTime)
+                .maximumTravelTime(maximumTravelTime.get())
+                .zone(zone)
+                .build();
     }
 
-    private IndividualJourney getJourneyForPerson(Person person, String stationName) {
+    private IndividualJourney buildJourneyForPerson(Person person, String stationName) {
         SingleSourceShortestPathResult journey = LocationProcessor.findElementInListByString(person.getSolutionCandidates(), stationName);
         Double travelTime = journey.getTotalCost() + person.getNearestStations().get(0).getWalkTime();
 
@@ -56,7 +62,12 @@ public class ResponseMapper {
         totalTravelTime.updateAndGet(v -> v + travelTime);
         JourneyDetails journeyDetails = getJourneyDetails(person, journey, travelTime);
 
-        return new IndividualJourney(person.getPersonID(), person.getWorkLocation().getPostcode(), travelTime, journeyDetails);
+        return IndividualJourney.builder()
+                .personID(person.getPersonID())
+                .workPostcode(person.getWorkLocation().getPostcode())
+                .travelTime(travelTime)
+                .journeyDetails(journeyDetails)
+                .build();
     }
 
     private JourneyDetails getJourneyDetails(Person person, SingleSourceShortestPathResult journey, Double travelTime) {

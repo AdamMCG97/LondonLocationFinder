@@ -89,7 +89,7 @@
     </dependencies>
 
     <properties>
-        <java.version>12</java.version>
+        <java.version>15</java.version>
     </properties>
 
     <build>

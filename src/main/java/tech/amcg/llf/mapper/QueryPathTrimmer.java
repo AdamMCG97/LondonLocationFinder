@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class QueryPathTrimmer {
 
-    List<LineDataResult> trimmedLineData;
+    List<LineDataResult> lineData;
     ArrayList<String> nodeNames;
 
     public SingleSourceShortestPathResult trim(SingleSourceShortestPathResult result) {
-        trimmedLineData = result.getLineData();
+        lineData = result.getLineData();
         nodeNames = result.getNodeNames();
         //remove final node from check as trimming works by checking starting station, no steps will exist with the end node as a starting station
         nodeNames.remove(nodeNames.size() - 1);
@@ -30,17 +30,16 @@ public class QueryPathTrimmer {
                 removeAllOtherDuplicatesFromPath(node, bestStep);
             }
             else if(stepOccurrencesInPath == 0) {
-                log.error(String.format("No steps found in path: %s for Node: %s.", trimmedLineData.toString(), node));
+                log.error(String.format("No steps found in path: %s for Node: %s.", lineData.toString(), node));
             }
         }
-        result.setLineData(trimmedLineData);
         return result;
     }
 
     private void removeAllOtherDuplicatesFromPath(String node, LineDataResult bestStep) {
         List<LineDataResult> duplicateStepsForNode = getStepsInPathByNode(node);
         duplicateStepsForNode.remove(bestStep);
-        trimmedLineData.removeAll(duplicateStepsForNode);
+        lineData.removeAll(duplicateStepsForNode);
     }
 
     private LineDataResult selectBestOfDuplicateSteps(String node) {
@@ -80,7 +79,7 @@ public class QueryPathTrimmer {
             return fastStepContinuedOnLine.get(0);
         }
         else if (fastStepContinuedOnLine.size() > 1) {
-            log.error(String.format("Duplicates of the same step exist on path. Duplicate steps: %s. Full path: %s", trimmedLineData.toString(), fastestSteps.toString()));
+            log.error(String.format("Duplicates of the same step exist on path. Duplicate steps: %s. Full path: %s", lineData.toString(), fastestSteps.toString()));
         }
         return null;
     }
@@ -93,7 +92,7 @@ public class QueryPathTrimmer {
             return fastStepContinuedOnLine.get(0);
         }
         else if (fastStepContinuedOnLine.size() > 1) {
-            log.error(String.format("Duplicates of the same step exist on path. Duplicate steps: %s. Full path: %s", trimmedLineData.toString(), fastestSteps.toString()));
+            log.error(String.format("Duplicates of the same step exist on path. Duplicate steps: %s. Full path: %s", lineData.toString(), fastestSteps.toString()));
         }
         return null;
     }
@@ -125,7 +124,7 @@ public class QueryPathTrimmer {
     }
 
     private List<LineDataResult> getStepsInPathByNode(String node) {
-        return trimmedLineData.stream().filter(step -> step.getStartNodeName().equals(node)).collect(Collectors.toList());
+        return lineData.stream().filter(step -> step.getStartNodeName().equals(node)).collect(Collectors.toList());
     }
 
     private Long findPreferredLine(List<Long> lines, String node) {

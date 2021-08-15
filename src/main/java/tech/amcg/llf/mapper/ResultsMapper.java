@@ -3,7 +3,6 @@ package tech.amcg.llf.mapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import tech.amcg.llf.domain.exception.LLFException;
 import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
 import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.response.IndividualJourney;

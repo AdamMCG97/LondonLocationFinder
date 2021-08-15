@@ -76,7 +76,7 @@ public class QueryPathTrimmer {
         Long preferredLine = findPreferredLine(lines, node);
         return getStepFromFastestStepsWithChosenLineIfExists(fastestSteps, preferredLine);
     }
-    
+
     private LineDataResult getStepFromFastestStepsWithChosenLineIfExists(List<LineDataResult> fastestSteps, Long line) {
         List<LineDataResult> fastStepContinuedOnLine = fastestSteps.stream().filter(step -> step.getLine().equals(line)).collect(Collectors.toList());
         if (fastStepContinuedOnLine.size() == 1) {
@@ -134,7 +134,7 @@ public class QueryPathTrimmer {
         if (stepsForNextNode.size() > 1) {
             return chooseLineFromFastestStep(stepsForNextNode, lines, nextNode);
         } else {
-            return getLineInListIfExists(lines, stepsForNextNode.get(0).getLine());
+            return getLineFromListIfExists(lines, stepsForNextNode.get(0).getLine());
         }
     }
 
@@ -147,16 +147,16 @@ public class QueryPathTrimmer {
                 return findPreferredLine(lines, nextNode);
             }
             else {
-                return getLineInListIfExists(lines, stepsForNextNode.get(0).getLine());
+                return getLineFromListIfExists(lines, stepsForNextNode.get(0).getLine());
             }
         }
         else {
-            return getLineInListIfExists(lines, stepsForNextNode.get(0).getLine());
+            return getLineFromListIfExists(lines, stepsForNextNode.get(0).getLine());
         }
     }
 
-    private Long getLineInListIfExists(List<Long> lines, Long desiredLine) {
-        return (lines.contains(desiredLine)) ? desiredLine : null;
+    private Long getLineFromListIfExists(List<Long> lines, Long desiredLine) {
+        return lines.contains(desiredLine) ? desiredLine : null;
     }
 
     private List<LineDataResult> findDuplicateStepsWithFastestTime(List<LineDataResult> duplicateSteps) {

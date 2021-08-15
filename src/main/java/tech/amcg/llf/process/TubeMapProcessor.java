@@ -12,7 +12,7 @@ import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.Query;
 import tech.amcg.llf.domain.query.Station;
 import tech.amcg.llf.mapper.QueryPathTrimmer;
-import tech.amcg.llf.mapper.ResponseMapper;
+import tech.amcg.llf.mapper.ResultsMapper;
 import tech.amcg.llf.service.Neo4JRepositoryService;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class TubeMapProcessor {
     Neo4JRepositoryService neo4JRepositoryService;
 
     @Autowired
-    ResponseMapper responseMapper;
+    ResultsMapper resultsMapper;
 
     @Autowired
     QueryPathTrimmer queryPathTrimmer;

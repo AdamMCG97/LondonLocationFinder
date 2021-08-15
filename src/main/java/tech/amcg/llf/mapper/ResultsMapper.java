@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RequiredArgsConstructor
 @Slf4j
-public class ResponseMapper {
+public class ResultsMapper {
 
     @NonNull
     private final TubeStepMapper tubeStepMapper;
@@ -29,7 +29,7 @@ public class ResponseMapper {
     private AtomicReference<Double> totalTravelTime;
     private AtomicReference<Double> maximumTravelTime;
 
-    public LLFResult mapResult(List<Person> personList, String stationName) {
+    public LLFResult mapPathForAll(List<Person> personList, String stationName) {
 
         individualJourneys = new ArrayList<>();
         totalTravelTime = new AtomicReference<>(0d);

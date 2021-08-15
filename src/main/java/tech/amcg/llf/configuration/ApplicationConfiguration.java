@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 import tech.amcg.llf.mapper.QueryPathTrimmer;
-import tech.amcg.llf.mapper.ResponseMapper;
+import tech.amcg.llf.mapper.ResultsMapper;
 import tech.amcg.llf.mapper.TubeStepMapper;
 import tech.amcg.llf.service.ApiRequestService;
 import tech.amcg.llf.mapper.StationNameMapper;
@@ -30,8 +30,8 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public ResponseMapper responseMapper() {
-        return new ResponseMapper(tubeStepMapper());
+    public ResultsMapper responseMapper() {
+        return new ResultsMapper(tubeStepMapper());
     }
 
     @Bean

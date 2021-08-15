@@ -29,7 +29,7 @@ public class LLFController {
     ObjectMapper objectMapper;
 
     @RequestMapping(method = RequestMethod.POST, value = "/llf")
-    public List<LLFResult> getLLFResults(@RequestBody String jsonQuery) throws JsonProcessingException, LLFException, UnirestException {
+    public List<LLFResult> getLLFResults(@RequestBody String jsonQuery) throws JsonProcessingException, LLFException {
         Query query = objectMapper.readValue(jsonQuery, Query.class);
         return LLFService.processQuery(query);
     }

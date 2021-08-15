@@ -9,7 +9,7 @@ import tech.amcg.llf.domain.Query;
 import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
 import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.response.LLFResult;
-import tech.amcg.llf.mapper.ResponseMapper;
+import tech.amcg.llf.mapper.ResultsMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ResultsProcessor {
 
     @Autowired
-    ResponseMapper responseMapper;
+    ResultsMapper resultsMapper;
 
     public List<LLFResult> generateResults(Query query) {
         List<String> matchingStationsList = findMatchingLocations(query.getPersonParamsList());
@@ -32,7 +32,7 @@ public class ResultsProcessor {
         List<LLFResult> resultList = new ArrayList<>();
 
         for(String station : stationsAcceptableToAll) {
-            resultList.add(responseMapper.mapResult(personList, station));
+            resultList.add(resultsMapper.mapPathForAll(personList, station));
         }
 
         return resultList;
@@ -51,8 +51,7 @@ public class ResultsProcessor {
 
             personList.forEach(person -> {
                 SingleSourceShortestPathResult journey = findElementInListByString(person.getAcceptablePaths(), station);
-                ref.optionForAllPeople = ref.optionForAllPeople
-                        && null != journey;
+                ref.optionForAllPeople = ref.optionForAllPeople && null != journey;
             });
 
             if(ref.optionForAllPeople) {

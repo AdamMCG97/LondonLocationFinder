@@ -27,7 +27,7 @@ public class QueryPathTrimmer {
             long stepOccurrencesInPath = stepOccurrencesInPath(node);
             if(stepOccurrencesInPath > 1) {
                 LineDataResult bestStep = selectBestOfDuplicateSteps(node);
-                removeAllOtherDuplicatesFromPath(node, bestStep);
+                removeNonSelectedDuplicates(node, bestStep);
             }
             else if(stepOccurrencesInPath == 0) {
                 log.error(String.format("No steps found in path: %s for Node: %s.", lineData.toString(), node));
@@ -36,7 +36,7 @@ public class QueryPathTrimmer {
         return result;
     }
 
-    private void removeAllOtherDuplicatesFromPath(String node, LineDataResult bestStep) {
+    private void removeNonSelectedDuplicates(String node, LineDataResult bestStep) {
         List<LineDataResult> duplicateStepsForNode = getStepsInPathByNode(node);
         duplicateStepsForNode.remove(bestStep);
         lineData.removeAll(duplicateStepsForNode);
@@ -57,11 +57,11 @@ public class QueryPathTrimmer {
     private LineDataResult selectBestOfFastestSteps(String node, List<LineDataResult> fastestSteps) {
         LineDataResult chosenStep = null;
         if(!isStartingStation(node)) {
-            chosenStep = selectStepWithoutLineChangeFromPrevious(node, fastestSteps);
+            chosenStep = selectStepWithoutLineChangeFromPreviousIfExists(node, fastestSteps);
         }
         //if a step without a line change from previous node is not an option
         if(null == chosenStep) {
-            chosenStep = selectStepOnSameLineAsNextStep(node, fastestSteps);
+            chosenStep = selectStepOnSameLineAsNextStepIfExists(node, fastestSteps);
         }
         //if a step without a line change for previous or following node is not an option
         if(null == chosenStep) {
@@ -71,30 +71,28 @@ public class QueryPathTrimmer {
         return chosenStep;
     }
 
-    private LineDataResult selectStepOnSameLineAsNextStep(String node, List<LineDataResult> fastestSteps) {
+    private LineDataResult selectStepOnSameLineAsNextStepIfExists(String node, List<LineDataResult> fastestSteps) {
         List<Long> lines = fastestSteps.stream().map(LineDataResult::getLine).collect(Collectors.toList());
         Long preferredLine = findPreferredLine(lines, node);
-        List<LineDataResult> fastStepContinuedOnLine = fastestSteps.stream().filter(step -> step.getLine().equals(preferredLine)).collect(Collectors.toList());
+        return getStepFromFastestStepsWithChosenLineIfExists(fastestSteps, preferredLine);
+    }
+    
+    private LineDataResult getStepFromFastestStepsWithChosenLineIfExists(List<LineDataResult> fastestSteps, Long line) {
+        List<LineDataResult> fastStepContinuedOnLine = fastestSteps.stream().filter(step -> step.getLine().equals(line)).collect(Collectors.toList());
         if (fastStepContinuedOnLine.size() == 1) {
             return fastStepContinuedOnLine.get(0);
         }
         else if (fastStepContinuedOnLine.size() > 1) {
             log.error(String.format("Duplicates of the same step exist on path. Duplicate steps: %s. Full path: %s", lineData.toString(), fastestSteps.toString()));
         }
+        //return null if there is no fastest step on chosen line
         return null;
     }
 
-    private LineDataResult selectStepWithoutLineChangeFromPrevious(String node, List<LineDataResult> fastestSteps) {
+    private LineDataResult selectStepWithoutLineChangeFromPreviousIfExists(String node, List<LineDataResult> fastestSteps) {
         String previousNode = getPreviousNodeName(node);
         LineDataResult previousStep = getStepsInPathByNode(previousNode).get(0);
-        List<LineDataResult> fastStepContinuedOnLine = fastestSteps.stream().filter(step -> step.getLine().equals(previousStep.getLine())).collect(Collectors.toList());
-        if (fastStepContinuedOnLine.size() == 1) {
-            return fastStepContinuedOnLine.get(0);
-        }
-        else if (fastStepContinuedOnLine.size() > 1) {
-            log.error(String.format("Duplicates of the same step exist on path. Duplicate steps: %s. Full path: %s", lineData.toString(), fastestSteps.toString()));
-        }
-        return null;
+        return getStepFromFastestStepsWithChosenLineIfExists(fastestSteps, previousStep.getLine());
     }
 
     private String getPreviousNodeName(String node) {

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.ToString;
 import org.springframework.data.neo4j.annotation.QueryResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @QueryResult
@@ -18,7 +19,7 @@ public class SingleSourceShortestPathResultDto {
     Double zone;
     Double totalCost;
     Iterable<List<Object>> lineData;
-    List<String> nodeNames;
+    ArrayList<String> nodeNames;
     List<Double> costs;
 
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.client.WebClient;
+import tech.amcg.llf.domain.query.Point;
 
 @Slf4j
 @NoArgsConstructor
@@ -30,14 +31,14 @@ public class ApiRequestService {
 
     private static final String hereApiPath = "/routes";
 
-    public String getHereApiRequestUrl(String startLat, String startLong, String endLat, String endLong) {
+    public String getHereApiRequestUrl(Point startLocation, Point endLocation) {
         return String.format("%s%s?transportMode=pedestrian&origin=%s,%s&destination=%s,%s&return=summary&apiKey=%s",
-                hereApiBaseUri, hereApiPath, startLat, startLong, endLat, endLong, hereApiKey);
+                hereApiBaseUri, hereApiPath, startLocation.getLatitude(), startLocation.getLongitude(), endLocation.getLatitude(), endLocation.getLongitude(), hereApiKey);
     }
 
-    public String getTransportApiRequestUrl(String lat, String lon) {
+    public String getTransportApiRequestUrl(Point location) {
         return String.format("%s%s?lat=%s&lon=%s&page=1&rpp=1&app_id=bf215419&app_key=%s",
-                transportApiBaseUri, transportApiPath, lat, lon, transportApiKey);
+                transportApiBaseUri, transportApiPath, location.getLatitude(), location.getLongitude(), transportApiKey);
     }
 
     public String getString(String url) {

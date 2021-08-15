@@ -27,28 +27,30 @@ public class Neo4JRepositoryService {
     public List<LegacySingleSourceShortestPathResult> distanceToAllStations(String stationName){
         log.debug(String.format("Received query for legacy distanceToAllStations from station: %s", stationName));
         return tubeRepository.distanceToAllStations(stationName);
-        //TODO: Enrich distance times by adding time for changes between lines
     }
 
     public List<SingleSourceShortestPathResult> dijkstraDistanceToAllStations(String stationName){
         log.debug(String.format("Received query for distanceToAllStations from station: %s", stationName));
         List<SingleSourceShortestPathResult> mappedResults = new ArrayList<>();
         List<SingleSourceShortestPathResultDto> results = tubeRepository.dijkstraDistanceToAllStations(stationName);
-        for(SingleSourceShortestPathResultDto result:results) {
-            mappedResults.add(SingleSourceShortestPathResult.builder()
-                    .index(result.getIndex())
-                    .costs(result.getCosts())
-                    .lineData(mapLineData(result.getLineData().iterator()))
-                    .nodeNames(result.getNodeNames())
-                    .sourceNodeName(result.getSourceNodeName())
-                    .targetNodeName(result.getTargetNodeName())
-                    .totalCost(result.getTotalCost())
-                    .zone(result.getZone())
-            .build());
+        for(SingleSourceShortestPathResultDto result : results) {
+            mappedResults.add(mapFromDtoToSingleSourceShortestPathResult(result));
         }
         log.debug(String.format("Returned %s results for allStations query for: %s", mappedResults.size(), stationName));
-        //TODO: Enrich distance times by adding time for changes between lines
         return mappedResults;
+    }
+
+    public SingleSourceShortestPathResult mapFromDtoToSingleSourceShortestPathResult(SingleSourceShortestPathResultDto dto) {
+        return SingleSourceShortestPathResult.builder()
+                .index(dto.getIndex())
+                .costs(dto.getCosts())
+                .lineData(mapLineData(dto.getLineData().iterator()))
+                .nodeNames(dto.getNodeNames())
+                .sourceNodeName(dto.getSourceNodeName())
+                .targetNodeName(dto.getTargetNodeName())
+                .totalCost(dto.getTotalCost())
+                .zone(dto.getZone())
+                .build();
     }
 
     //very odd behaviour, lineData behaves as an Iterable<Object> but won't load as anything other than an Iterable of a list type
@@ -66,7 +68,8 @@ public class Neo4JRepositoryService {
                             .time((Long) time)
                             .startNodeName((String) startNodeName)
                             .endNodeName((String) endNodeName)
-                            .build());
+                            .build()
+            );
         }
         return mappedResults;
     }
@@ -75,31 +78,16 @@ public class Neo4JRepositoryService {
         log.debug(String.format("Received query for distanceToAllStations from station: %s", stationName));
         List<SingleSourceShortestPathResult> mappedResults = new ArrayList<>();
         List<SingleSourceShortestPathResultDto> results = tubeRepository.dijkstraDistanceToAllStations(stationName, zones, maxTime);
-        for(SingleSourceShortestPathResultDto result:results) {
-            mappedResults.add(SingleSourceShortestPathResult.builder()
-                    .index(result.getIndex())
-                    .costs(result.getCosts())
-                    .lineData(mapLineData(result.getLineData().iterator()))
-                    .nodeNames(result.getNodeNames())
-                    .sourceNodeName(result.getSourceNodeName())
-                    .targetNodeName(result.getTargetNodeName())
-                    .totalCost(result.getTotalCost())
-                    .zone(result.getZone())
-                    .build());
+        for(SingleSourceShortestPathResultDto result : results) {
+            mappedResults.add(mapFromDtoToSingleSourceShortestPathResult(result));
         }
         log.debug(String.format("Returned %s results for allStations query for: %s", mappedResults.size(), stationName));
-        //TODO: Enrich distance times by adding time for changes between lines
         return mappedResults;
     }
 
     public List<ShortestPathResult> dijkstraDetailedJourneyBetween(String firstStation, String secondStation) {
         log.debug(String.format("Received query for detailedJourneyBetween. start: %s & end: %s", firstStation, secondStation));
         return tubeRepository.dijkstraDetailedJourneyBetween(firstStation, secondStation);
-    }
-
-    public List<ShortestPathResult> dijkstraDetailedJourneyByTubeLine(String firstStation, String secondStation) {
-        log.debug(String.format("Received query for detailedJourneyByTubeLine. start: %s & end: %s", firstStation, secondStation));
-        return tubeRepository.dijkstraDetailedJourneyByTubeLine(firstStation, secondStation);
     }
 
 }

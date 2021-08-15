@@ -1,28 +1,23 @@
 package tech.amcg.llf.domain.query;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter @Setter
 public class Station implements Location {
+
+    @NonNull
     private String name;
 
-    private String latitude;
-
-    private String longitude;
+    private Point point;
 
     private int walkTime;
 
-    private String naptanCode;
-
-    public Station(String name){
-        this.name = name;
-    }
-
-    public Station(String name, String latitude, String longitude, String naptanCode) {
-        this.name = name;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.naptanCode = naptanCode;
-    }
 }

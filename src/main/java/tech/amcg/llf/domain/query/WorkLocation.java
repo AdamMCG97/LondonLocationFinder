@@ -16,8 +16,5 @@ public class WorkLocation implements Location {
     
     private String postcode;
 
-    private String latitude;
-
-    private String longitude;
-
+    private Point point;
 }

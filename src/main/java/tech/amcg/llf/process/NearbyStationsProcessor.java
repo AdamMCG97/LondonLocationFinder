@@ -15,6 +15,7 @@ import tech.amcg.llf.domain.query.WorkLocation;
 import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.Query;
 import tech.amcg.llf.domain.query.Station;
+import tech.amcg.llf.domain.query.Point;
 import tech.amcg.llf.mapper.StationNameMapper;
 import tech.amcg.llf.service.ApiRequestService;
 
@@ -63,7 +64,7 @@ public class NearbyStationsProcessor {
     }
 
     private int getWalkingTimeFromStation(Station station, WorkLocation distanceFrom) throws LLFException {
-        String url = apiRequestService.getHereApiRequestUrl(distanceFrom.getLatitude(), distanceFrom.getLongitude(), station.getLatitude(), station.getLongitude());
+        String url = apiRequestService.getHereApiRequestUrl(distanceFrom.getPoint(), station.getPoint());
         String response = apiRequestService.getString(url);
         JsonNode responseAsJson;
 
@@ -88,7 +89,8 @@ public class NearbyStationsProcessor {
     }
 
     private void getNearestStationNames(List<Person> personList) throws LLFException {
-        personList.forEach(person -> Try.of(() -> findNearestStations(person.getWorkLocation().getLatitude(), person.getWorkLocation().getLongitude()))
+        personList.forEach(person ->
+                Try.of(() -> findNearestStations(person.getWorkLocation().getPoint()))
                 .onSuccess(person::setNearestStations)
         );
         for (Person person : personList) {
@@ -98,8 +100,8 @@ public class NearbyStationsProcessor {
         }
     }
 
-    private List<Station> findNearestStations(String latitude, String longitude) throws LLFException {
-        String url = apiRequestService.getTransportApiRequestUrl(latitude, longitude);
+    private List<Station> findNearestStations(Point latitudeAndLongitude) throws LLFException {
+        String url = apiRequestService.getTransportApiRequestUrl(latitudeAndLongitude);
         String response = apiRequestService.getString(url);
         JsonNode responseAsJson;
 
@@ -122,18 +124,15 @@ public class NearbyStationsProcessor {
         JsonNode stations = stationJsonResponse.get("stations");
         List<Station> stationList = new ArrayList<>();
 
-        stations.forEach(station -> stationList.add( new Station(station.get("name").asText(), station.get("latitude").toString(), station.get("longitude").toString(), convertAtcoToNaptan(station.get("atcocode").toString()))));
+        stations.forEach(
+                station -> stationList.add(
+                    Station.builder()
+                        .name(station.get("name").asText())
+                        .point(new Point(station.get("latitude").toString(), station.get("longitude").toString()))
+                        .build()
+                )
+        );
         return stationList;
-    }
-
-    private String convertAtcoToNaptan(String atco) {
-        //replace second occurence of 0 with G
-
-        int firstOccurence = atco.indexOf('0');
-        String firstPart = atco.substring(0, firstOccurence+1);
-        String secondPart = atco.substring(firstOccurence+1).replaceFirst("0", "G");
-
-        return firstPart + secondPart;
     }
 
     private void enrichLocationData(List<Person> personList) throws LLFException {
@@ -151,12 +150,12 @@ public class NearbyStationsProcessor {
         }
         personList.forEach(person ->
                 Try.of(() -> getLatAndLong(person.getWorkLocation()))
-                .onSuccess(latAndLong -> person.getWorkLocation().setLatitude(latAndLong._1))
-                .onSuccess(latAndLong -> person.getWorkLocation().setLongitude(latAndLong._2)));
+                .onSuccess(latAndLong -> person.getWorkLocation().setPoint(latAndLong))
+        );
     }
 
-    private Tuple2<String, String> getLatAndLong(WorkLocation workLocation) throws Exception {
+    private Point getLatAndLong(WorkLocation workLocation) throws Exception {
         JsonNode lookupResult = objectMapper.readTree(PostcodeLookup.postcode(workLocation.getPostcode()).asJson().get("result").toString());
-        return Tuple.of(lookupResult.get("latitude").toString(), lookupResult.get("longitude").toString());
+        return new Point(lookupResult.get("latitude").toString(), lookupResult.get("longitude").toString());
     }
 }

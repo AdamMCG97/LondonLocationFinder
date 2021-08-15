@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter @AllArgsConstructor @Builder @ToString @Setter
@@ -17,7 +18,7 @@ public class SingleSourceShortestPathResult {
     Double zone;
     Double totalCost;
     List<LineDataResult> lineData;
-    List<String> nodeNames;
+    ArrayList<String> nodeNames;
     List<Double> costs;
 
 }

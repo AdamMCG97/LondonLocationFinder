@@ -8,10 +8,10 @@ import com.postcode.io.initializers.PostcodeLookup;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import tech.amcg.llf.domain.exception.LLFException;
+import tech.amcg.llf.domain.exception.LlfException;
 import tech.amcg.llf.domain.query.WorkLocation;
 import tech.amcg.llf.domain.query.Person;
-import tech.amcg.llf.domain.Query;
+import tech.amcg.llf.domain.LlfQuery;
 import tech.amcg.llf.domain.query.Station;
 import tech.amcg.llf.domain.query.Point;
 import tech.amcg.llf.mapper.StationNameMapper;
@@ -37,7 +37,7 @@ public class WorkLocationProcessor {
         this.stationNameMapper = stationNameMapper;
     }
 
-    public void findNearestStationsByWalkingDistance(Query query) throws LLFException {
+    public void findNearestStationsByWalkingDistance(LlfQuery query) throws LlfException {
         enrichLocationData(query.getPersonParamsList());
         getNearestStationNames(query.getPersonParamsList());
         getClosestStationsByWalk(query.getPersonParamsList());
@@ -61,7 +61,7 @@ public class WorkLocationProcessor {
         return stationList;
     }
 
-    private int getWalkingTimeFromStation(Station station, WorkLocation distanceFrom) throws LLFException {
+    private int getWalkingTimeFromStation(Station station, WorkLocation distanceFrom) throws LlfException {
         String url = apiRequestService.getHereApiRequestUrl(distanceFrom.getPoint(), station.getPoint());
         String response = apiRequestService.getString(url);
         JsonNode responseAsJson;
@@ -69,7 +69,7 @@ public class WorkLocationProcessor {
         try {
             responseAsJson = objectMapper.readTree(response);
         } catch (JsonProcessingException ex) {
-            throw new LLFException(
+            throw new LlfException(
                     String.format("Error Reading Json Response: %s",
                             ex.getMessage()),
                     ex);
@@ -78,7 +78,7 @@ public class WorkLocationProcessor {
         Integer walkTime = extractTimeFromJson(responseAsJson);
 
         if(null == walkTime) {
-            throw new LLFException(String.format("Walk Time Not Found In Json Response: %s", responseAsJson.toPrettyString()));
+            throw new LlfException(String.format("Walk Time Not Found In Json Response: %s", responseAsJson.toPrettyString()));
         }
 
         return walkTime > 0 ? Math.round(walkTime / 60f) : walkTime;
@@ -88,19 +88,19 @@ public class WorkLocationProcessor {
         return Try.of(() -> responseAsJson.findParent("duration").get("duration").asInt()).getOrNull();
     }
 
-    private void getNearestStationNames(List<Person> personList) throws LLFException {
+    private void getNearestStationNames(List<Person> personList) throws LlfException {
         personList.forEach(person ->
                 Try.of(() -> findNearestStations(person.getWorkLocation().getPoint()))
                 .onSuccess(person::setNearestStations)
         );
         for (Person person : personList) {
             if(null == person.getNearestStations() || person.getNearestStations().size() == 0) {
-                throw new LLFException(String.format("No Stations found for person: %s", person.toString()));
+                throw new LlfException(String.format("No Stations found for person: %s", person.toString()));
             }
         }
     }
 
-    private List<Station> findNearestStations(Point latitudeAndLongitude) throws LLFException {
+    private List<Station> findNearestStations(Point latitudeAndLongitude) throws LlfException {
         String url = apiRequestService.getTransportApiRequestUrl(latitudeAndLongitude);
         String response = apiRequestService.getString(url);
         JsonNode responseAsJson;
@@ -108,7 +108,7 @@ public class WorkLocationProcessor {
         try {
             responseAsJson = objectMapper.readTree(response);
         } catch (JsonProcessingException ex) {
-            throw new LLFException(
+            throw new LlfException(
                     String.format("Error Reading Json Response: %s",
                             ex.getMessage()),
                     ex);
@@ -131,12 +131,12 @@ public class WorkLocationProcessor {
         return stationList;
     }
 
-    private void enrichLocationData(List<Person> personList) throws LLFException {
+    private void enrichLocationData(List<Person> personList) throws LlfException {
         for (Person person : personList) {
             //From UI, validity should be handled as user inputs postcode and prior to query being submitted
             //added validity check here for requests that don't originate from the UI, i.e. postman prototype
             if(!isValidPostcode(person.getWorkLocation().getPostcode())) {
-                throw new LLFException(String.format("Invalid Postcode: %s", person.getWorkLocation().getPostcode()));
+                throw new LlfException(String.format("Invalid Postcode: %s", person.getWorkLocation().getPostcode()));
             }
         }
         personList.forEach(person ->
@@ -146,20 +146,20 @@ public class WorkLocationProcessor {
         );
     }
 
-    public boolean isValidPostcode(String postcode) throws LLFException {
+    public boolean isValidPostcode(String postcode) throws LlfException {
         try {
             return PostcodeLookup.isValid(postcode);
         } catch (UnirestException ex) {
-            throw new LLFException(String.format("Error Validating Postcode: %s", ex.getMessage()), ex);
+            throw new LlfException(String.format("Error Validating Postcode: %s", ex.getMessage()), ex);
         }
     }
 
-    private Point getLatAndLong(WorkLocation workLocation) throws LLFException {
+    private Point getLatAndLong(WorkLocation workLocation) throws LlfException {
         try {
             JsonNode postcodeLookup = objectMapper.readTree(PostcodeLookup.postcode(workLocation.getPostcode()).asJson().get("result").toString());
             return new Point(postcodeLookup.get("latitude").toString(), postcodeLookup.get("longitude").toString());
         } catch (Exception ex) {
-            throw new LLFException(String.format("Error Looking Up Postcode: %s", ex.getMessage()), ex);
+            throw new LlfException(String.format("Error Looking Up Postcode: %s", ex.getMessage()), ex);
         }
     }
 }

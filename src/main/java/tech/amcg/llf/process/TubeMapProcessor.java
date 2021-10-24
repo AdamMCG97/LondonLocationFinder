@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tech.amcg.llf.domain.exception.LLFException;
+import tech.amcg.llf.domain.exception.LlfException;
 import tech.amcg.llf.domain.neo4j.LineDataResult;
 import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
 import tech.amcg.llf.domain.query.Person;
-import tech.amcg.llf.domain.Query;
+import tech.amcg.llf.domain.LlfQuery;
 import tech.amcg.llf.domain.query.Station;
 import tech.amcg.llf.mapper.QueryPathTrimmer;
 import tech.amcg.llf.mapper.ResultsMapper;
@@ -35,23 +35,23 @@ public class TubeMapProcessor {
 
     public static final Double STANDARD_TIME_PER_LINE_CHANGE = 3d;
 
-    public void findAllAcceptablePaths(Query query) {
+    public void findAllAcceptablePaths(LlfQuery query) {
         query.getPersonParamsList().forEach(person -> {
             try {
                 findLocationsForPerson(person, query.getExclusionZones());
-            } catch (LLFException e) {
+            } catch (LlfException e) {
                 throw new RuntimeException(e);
             }
         });
     }
 
-    private void findLocationsForPerson(Person person, List<Double> exclusionZones) throws LLFException {
+    private void findLocationsForPerson(Person person, List<Double> exclusionZones) throws LlfException {
         Station nearestStation = person.getNearestStations().get(0);
 
         List<SingleSourceShortestPathResult> shortestPathToAllStations = neo4JRepositoryService.dijkstraDistanceToAllStations(nearestStation.getName(), exclusionZones, person.getMaximumCommuteTime() - nearestStation.getWalkTime());
 
         if(shortestPathToAllStations.size() == 0) {
-            throw new LLFException(
+            throw new LlfException(
                     String.format("No Stations Found Within Specified Commute Distance For Person: %s. Closest station to %s identified as %s.",
                             person.getPersonID(),
                             person.getWorkLocation().getPostcode(),
@@ -64,7 +64,7 @@ public class TubeMapProcessor {
         removePathsExceedingQueryLimits(trimmedResults, person, nearestStation);
 
         if(trimmedResults.size() == 0) {
-            throw new LLFException(String.format("No suitable paths found for nearest station: %s. Identified as closest station to %s.", nearestStation.getName(), person.getWorkLocation().getPostcode()));
+            throw new LlfException(String.format("No suitable paths found for nearest station: %s. Identified as closest station to %s.", nearestStation.getName(), person.getWorkLocation().getPostcode()));
         }
 
         person.setAcceptablePaths(trimmedResults);

@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import tech.amcg.llf.domain.neo4j.SingleSourceShortestPathResult;
 import tech.amcg.llf.domain.query.Person;
 import tech.amcg.llf.domain.response.IndividualJourney;
-import tech.amcg.llf.domain.response.LLFResult;
+import tech.amcg.llf.domain.response.LlfResult;
 import tech.amcg.llf.domain.response.mapping.JourneyDetails;
 import tech.amcg.llf.domain.response.mapping.JourneyStep;
 import tech.amcg.llf.domain.response.mapping.SpecificWalkStep;
@@ -28,7 +28,7 @@ public class ResultsMapper {
     private AtomicReference<Double> totalTravelTime;
     private AtomicReference<Double> maximumTravelTime;
 
-    public LLFResult mapPathForAll(List<Person> personList, String stationName) {
+    public LlfResult mapPathForAll(List<Person> personList, String stationName) {
 
         individualJourneys = new ArrayList<>();
         totalTravelTime = new AtomicReference<>(0d);
@@ -42,7 +42,7 @@ public class ResultsMapper {
         Double averageTime = totalTravelTime.updateAndGet(v -> v / personList.size());
         Double zone = ResultsProcessor.findElementInListByString(personList.get(0).getAcceptablePaths(), stationName).getZone();
 
-        return LLFResult.builder()
+        return LlfResult.builder()
                 .name(stationName)
                 .individualJourneys(individualJourneys)
                 .averageTravelTime(averageTime)

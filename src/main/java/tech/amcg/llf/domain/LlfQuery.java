@@ -15,7 +15,7 @@ import java.util.List;
 @Getter @Setter
 @Builder
 @ToString
-public class Query {
+public class LlfQuery {
 
     private List<Person> personParamsList;
 

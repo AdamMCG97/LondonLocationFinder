@@ -1,0 +1,139 @@
+{
+  "minlon": -0.280416,
+  "minlat": 51.418885,
+  "maxlon": -0.080416,
+  "maxlat": 51.618885,
+  "searchlon": -0.180416,
+  "searchlat": 51.518885,
+  "page": 1,
+  "rpp": 10,
+  "total": 151,
+  "request_time": "2021-10-24T12:56:46+01:00",
+  "stations": [
+    {
+      "station_code": "PADs",
+      "atcocode": "9400ZZLUPAH",
+      "name": "Paddington (H & C line)",
+      "mode": "tube",
+      "longitude": -0.17858,
+      "latitude": 51.51847,
+      "lines": [
+        "circle",
+        "hammersmith"
+      ],
+      "distance": 217
+    },
+    {
+      "station_code": "PADc",
+      "atcocode": "9400ZZLUPAH",
+      "name": "Paddington (Circle)",
+      "mode": "tube",
+      "longitude": -0.1783,
+      "latitude": 51.51819,
+      "lines": [
+        "circle",
+        "district"
+      ],
+      "distance": 266
+    },
+    {
+      "station_code": "PAD",
+      "atcocode": "9400ZZLUPAC",
+      "name": "Paddington (Bakerloo)",
+      "mode": "tube",
+      "longitude": -0.17569,
+      "latitude": 51.51659,
+      "lines": [
+        "bakerloo"
+      ],
+      "distance": 667
+    },
+    {
+      "station_code": "ROA",
+      "atcocode": "9400ZZLURYO",
+      "name": "Royal Oak",
+      "mode": "tube",
+      "longitude": -0.18809,
+      "latitude": 51.51908,
+      "lines": [
+        "circle",
+        "hammersmith"
+      ],
+      "distance": 855
+    },
+    {
+      "station_code": "WAR",
+      "atcocode": "9400ZZLUWKA",
+      "name": "Warwick Avenue",
+      "mode": "tube",
+      "longitude": -0.18371,
+      "latitude": 51.52323,
+      "lines": [
+        "bakerloo"
+      ],
+      "distance": 859
+    },
+    {
+      "station_code": "ERB",
+      "atcocode": "9400ZZLUERB",
+      "name": "Edgware Road (Bakerloo)",
+      "mode": "tube",
+      "longitude": -0.16911,
+      "latitude": 51.52058,
+      "lines": [
+        "bakerloo"
+      ],
+      "distance": 1295
+    },
+    {
+      "station_code": "LAN",
+      "atcocode": "9400ZZLULGT",
+      "name": "Lancaster Gate",
+      "mode": "tube",
+      "longitude": -0.17549,
+      "latitude": 51.51173,
+      "lines": [
+        "central"
+      ],
+      "distance": 1392
+    },
+    {
+      "station_code": "ERD",
+      "atcocode": "9400ZZLUERC",
+      "name": "Edgware Road (Cir)",
+      "mode": "tube",
+      "longitude": -0.16783,
+      "latitude": 51.51986,
+      "lines": [
+        "circle",
+        "district",
+        "hammersmith"
+      ],
+      "distance": 1412
+    },
+    {
+      "station_code": "BAY",
+      "atcocode": "9400ZZLUBWT",
+      "name": "Bayswater",
+      "mode": "tube",
+      "longitude": -0.18794,
+      "latitude": 51.51229,
+      "lines": [
+        "circle"
+      ],
+      "distance": 1447
+    },
+    {
+      "station_code": "QWY",
+      "atcocode": "9400ZZLUQWY",
+      "name": "Queensway",
+      "mode": "tube",
+      "longitude": -0.18715,
+      "latitude": 51.51032,
+      "lines": [
+        "central"
+      ],
+      "distance": 1706
+    }
+  ]
+}

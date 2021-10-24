@@ -2,19 +2,18 @@ package tech.amcg.llf.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tech.amcg.llf.domain.exception.LLFException;
+import tech.amcg.llf.domain.exception.LlfException;
 import tech.amcg.llf.domain.query.WorkLocation;
 import tech.amcg.llf.domain.query.Person;
-import tech.amcg.llf.domain.Query;
-import tech.amcg.llf.domain.response.LLFResult;
-import tech.amcg.llf.service.LLFService;
+import tech.amcg.llf.domain.LlfQuery;
+import tech.amcg.llf.domain.response.LlfResult;
+import tech.amcg.llf.service.LlfService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,25 +22,25 @@ import java.util.List;
 public class LLFController {
 
     @Autowired
-    LLFService LLFService;
+    LlfService LLFService;
 
     @Autowired
     ObjectMapper objectMapper;
 
     @RequestMapping(method = RequestMethod.POST, value = "/llf")
-    public List<LLFResult> getLLFResults(@RequestBody String jsonQuery) throws JsonProcessingException, LLFException {
-        Query query = objectMapper.readValue(jsonQuery, Query.class);
+    public List<LlfResult> getLLFResults(@RequestBody String jsonQuery) throws JsonProcessingException, LlfException {
+        LlfQuery query = objectMapper.readValue(jsonQuery, LlfQuery.class);
         return LLFService.processQuery(query);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/validatepostcode")
-    public String validatePostcode(@RequestParam String postcode) throws LLFException {
+    public String validatePostcode(@RequestParam String postcode) throws LlfException {
         return LLFService.validatePostcode(postcode) ? "True" : "False";
     }
 
     @RequestMapping("/llfquery")
     public String getLLFQuery() throws JsonProcessingException {
-        Query sampleQuery = Query.builder()
+        LlfQuery sampleQuery = LlfQuery.builder()
                 .exclusionZones(Arrays.asList(1d,1.5d,2d))
                 .differentCommuteMaximums(true)
                 .personParamsList(Arrays.asList(

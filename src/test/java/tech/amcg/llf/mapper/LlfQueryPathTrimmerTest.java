@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class QueryPathTrimmerTest {
+public class LlfQueryPathTrimmerTest {
 
     QueryPathTrimmer queryPathTrimmer = new QueryPathTrimmer();
 

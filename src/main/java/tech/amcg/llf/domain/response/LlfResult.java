@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 @Getter
 @AllArgsConstructor
-public class LLFResult {
+public class LlfResult {
 
     private final String name;
 

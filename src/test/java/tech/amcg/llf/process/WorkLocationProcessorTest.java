@@ -28,11 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(
-        classes = Application.class,
-        properties = "spring.main.allow-bean-definition-overriding=true"
-)
-@RunWith(SpringRunner.class)
+
 public class WorkLocationProcessorTest extends LlfSpringTest {
 
     @Autowired
@@ -152,17 +148,15 @@ public class WorkLocationProcessorTest extends LlfSpringTest {
     }
 
     private void wireMockServerWillRespondWith(String request, String response, int responseCode) {
-
         wireMockServer.stubFor(
-                WireMock.get((request))
-                        .willReturn(
-                                new ResponseDefinitionBuilder()
-                                        .withStatus(responseCode)
-                                        .withHeader("Content-Type", "application/json")
-                                        .withBody(response)
-                        )
+            WireMock.get((request))
+                .willReturn(
+                        new ResponseDefinitionBuilder()
+                                .withStatus(responseCode)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody(response)
+                )
         );
-
     }
 
     private void wireMockServerWillRespondWith(String request, String response) {

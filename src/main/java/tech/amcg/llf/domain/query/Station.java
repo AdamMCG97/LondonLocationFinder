@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter @Setter
+@ToString
 public class Station implements Location {
 
     @NonNull

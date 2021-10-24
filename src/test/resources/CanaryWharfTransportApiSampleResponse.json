@@ -1,0 +1,134 @@
+{
+  "minlon": -0.117428,
+  "minlat": 51.404454,
+  "maxlon": 0.082572,
+  "maxlat": 51.604454,
+  "searchlon": -0.017428,
+  "searchlat": 51.504454,
+  "page": 1,
+  "rpp": 10,
+  "total": 106,
+  "request_time": "2021-10-24T20:54:36+01:00",
+  "stations": [
+    {
+      "station_code": "CWF",
+      "atcocode": "9400ZZLUCYF",
+      "name": "Canary Wharf",
+      "mode": "tube",
+      "longitude": -0.01604,
+      "latitude": 51.50329,
+      "lines": [
+        "jubilee"
+      ],
+      "distance": 259
+    },
+    {
+      "station_code": "caw",
+      "atcocode": "9400ZZDLCAN",
+      "name": "Canary Wharf DLR Station",
+      "mode": "tube",
+      "longitude": -0.02099,
+      "latitude": 51.50484,
+      "lines": [
+        "dlr"
+      ],
+      "distance": 402
+    },
+    {
+      "station_code": "heq",
+      "atcocode": "9400ZZDLHEQ",
+      "name": "Heron Quays DLR Station",
+      "mode": "tube",
+      "longitude": -0.02141,
+      "latitude": 51.50338,
+      "lines": [
+        "dlr"
+      ],
+      "distance": 483
+    },
+    {
+      "station_code": "wiq",
+      "atcocode": "9400ZZDLWIQ",
+      "name": "West India Quay DLR Station",
+      "mode": "tube",
+      "longitude": -0.0203,
+      "latitude": 51.50703,
+      "lines": [
+        "dlr"
+      ],
+      "distance": 561
+    },
+    {
+      "station_code": "pop",
+      "atcocode": "9400ZZDLPOP",
+      "name": "Poplar DLR Station",
+      "mode": "tube",
+      "longitude": -0.01741,
+      "latitude": 51.50766,
+      "lines": [
+        "dlr"
+      ],
+      "distance": 573
+    },
+    {
+      "station_code": "soq",
+      "atcocode": "9400ZZDLSOQ",
+      "name": "South Quay DLR Station",
+      "mode": "tube",
+      "longitude": -0.01903,
+      "latitude": 51.50056,
+      "lines": [
+        "dlr"
+      ],
+      "distance": 719
+    },
+    {
+      "station_code": "als",
+      "atcocode": "9400ZZDLALL",
+      "name": "All Saints DLR Station",
+      "mode": "tube",
+      "longitude": -0.01292,
+      "latitude": 51.51104,
+      "lines": [
+        "dlr"
+      ],
+      "distance": 1280
+    },
+    {
+      "station_code": "bla",
+      "atcocode": "9400ZZDLBLA",
+      "name": "Blackwall DLR Station",
+      "mode": "tube",
+      "longitude": -0.00723,
+      "latitude": 51.50803,
+      "lines": [
+        "dlr"
+      ],
+      "distance": 1303
+    },
+    {
+      "station_code": "wes",
+      "atcocode": "9400ZZDLWFE",
+      "name": "Westferry DLR Station",
+      "mode": "tube",
+      "longitude": -0.0269,
+      "latitude": 51.50974,
+      "lines": [
+        "dlr"
+      ],
+      "distance": 1416
+    },
+    {
+      "station_code": "cro",
+      "atcocode": "9400ZZDLCLA",
+      "name": "Crossharbour & London Arena DLR Station",
+      "mode": "tube",
+      "longitude": -0.0146,
+      "latitude": 51.49573,
+      "lines": [
+        "dlr"
+      ],
+      "distance": 1591
+    }
+  ]
+}

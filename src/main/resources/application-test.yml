@@ -1,0 +1,25 @@
+org:
+  neo4j:
+    driver:
+      uri: ""
+      authentication:
+        username: ""
+        password: ""
+
+llf:
+  api:
+    here:
+      uri: https://localhost
+      port: 0
+      key: 12345
+    transport:
+      uri: http://localhost
+      port: 0
+      key: abcde
+
+logging:
+  level:
+    root: INFO
+    tech:
+      amcg:
+        llf: DEBUG

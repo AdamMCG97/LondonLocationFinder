@@ -88,7 +88,7 @@ public class WorkLocationProcessor {
         return Try.of(() -> responseAsJson.findParent("duration").get("duration").asInt()).getOrNull();
     }
 
-    private void getNearestStationNames(List<Person> personList) throws LlfException {
+    void getNearestStationNames(List<Person> personList) throws LlfException {
         personList.forEach(person ->
                 Try.of(() -> findNearestStations(person.getWorkLocation().getPoint()))
                 .onSuccess(person::setNearestStations)
@@ -131,7 +131,7 @@ public class WorkLocationProcessor {
         return stationList;
     }
 
-    private void enrichLocationData(List<Person> personList) throws LlfException {
+    void enrichLocationData(List<Person> personList) throws LlfException {
         for (Person person : personList) {
             //From UI, validity should be handled as user inputs postcode and prior to query being submitted
             //added validity check here for requests that don't originate from the UI, i.e. postman prototype

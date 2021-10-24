@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-public class LLFController {
+class LlfController {
 
     @Autowired
     LlfService LLFService;
@@ -28,7 +28,7 @@ public class LLFController {
     ObjectMapper objectMapper;
 
     @RequestMapping(method = RequestMethod.POST, value = "/llf")
-    public List<LlfResult> getLLFResults(@RequestBody String jsonQuery) throws JsonProcessingException, LlfException {
+    public List<LlfResult> getLlfResults(@RequestBody String jsonQuery) throws JsonProcessingException, LlfException {
         LlfQuery query = objectMapper.readValue(jsonQuery, LlfQuery.class);
         return LLFService.processQuery(query);
     }
@@ -39,7 +39,7 @@ public class LLFController {
     }
 
     @RequestMapping("/llfquery")
-    public String getLLFQuery() throws JsonProcessingException {
+    public String getLlfQuery() throws JsonProcessingException {
         LlfQuery sampleQuery = LlfQuery.builder()
                 .exclusionZones(Arrays.asList(1d,1.5d,2d))
                 .differentCommuteMaximums(true)

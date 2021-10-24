@@ -4,32 +4,32 @@
       "personID": "Ryan",
       "workLocation": {
         "postcode": "W2 6TT",
-        "latitude": null,
-        "longitude": null
+        "point": null
       },
       "maximumCommuteTime": 40,
+      "maximumWalkTime": 15,
       "nearestStations": null,
-      "solutionCandidates": null,
-      "maximumWalkTime": 15
+      "acceptablePaths": null
     },
     {
       "personID": "Adam",
       "workLocation": {
         "postcode": "E14 5AH",
-        "latitude": null,
-        "longitude": null
+        "point": null
       },
       "maximumCommuteTime": 30,
+      "maximumWalkTime": 15,
       "nearestStations": null,
-      "solutionCandidates": null,
-      "maximumWalkTime": 10
+      "acceptablePaths": null
     }
   ],
   "exclusionZones": [
-    1,
-    2
+    1.0,
+    1.5,
+    2.0
   ],
   "numberOfBedrooms": 2,
   "lowerBoundPriceRange": 1500,
-  "upperBoundPriceRange": 2000
+  "upperBoundPriceRange": 2000,
+  "differentCommuteMaximums": true
 }

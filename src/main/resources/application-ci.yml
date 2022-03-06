@@ -9,10 +9,12 @@ org:
 llf:
   api:
     here:
-      uri: https://localhost
-      port: 0
+      uri: https://localhost:5599
       key: 12345
     transport:
-      uri: http://localhost
-      port: 0
+      uri: http://localhost:5599
       key: abcde
+
+test:
+  wiremock:
+    port: 5599

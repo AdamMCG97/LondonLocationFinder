@@ -18,6 +18,7 @@ jobs:
         run: mvn verify
         env:
           DEPLOYMENT_ENVIRONMENT: ci
+          NEO4J_URI: env.DAY_OF_WEEK
 
   deploy:
     needs: build

@@ -18,7 +18,7 @@ jobs:
         run: mvn verify
         env:
           DEPLOYMENT_ENVIRONMENT: ci
-          NEO4J_URI: ${{env.NEO4J_URI}}
+          NEO4J_URI: ${{secrets.NEO4J_URI}}
           NEO4J_USER: ${{secrets.NEO4J_USER}}
           NEO4J_PASS: ${{secrets.NEO4J_PASS}}
 

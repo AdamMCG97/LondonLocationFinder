@@ -18,7 +18,7 @@ import java.io.UncheckedIOException;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Import(LocalTestConfiguration.class)
-@ActiveProfiles("test")
+@ActiveProfiles(resolver = TestProfileResolver.class)
 @AutoConfigureWireMock(port=80)
 @SpringBootTest(
         classes = Application.class,

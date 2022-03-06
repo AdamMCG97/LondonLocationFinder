@@ -1,0 +1,16 @@
+org:
+  neo4j:
+    driver:
+      uri: ${NEO4J_URI}
+      authentication:
+        username: ${NEO4J_USER}
+        password: ${NEO4J_PASSWORD}
+
+llf:
+  api:
+    here:
+      uri: https://router.hereapi.com/v8
+      key: ${HERE_API_KEY}
+    transport:
+      uri: http://transportapi.com/v3
+      key: ${TRANSPORT_API_KEY}

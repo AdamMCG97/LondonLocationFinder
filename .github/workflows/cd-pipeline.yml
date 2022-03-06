@@ -9,6 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 16
+        environment: amcg-llf
         uses: actions/setup-java@v2
         with:
           java-version: '16'

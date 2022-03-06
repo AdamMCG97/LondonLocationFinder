@@ -1,8 +1,11 @@
 package tech.amcg.llf.config;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
@@ -19,7 +22,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Import(LocalTestConfiguration.class)
 @ActiveProfiles(resolver = TestProfileResolver.class)
-@AutoConfigureWireMock(port=80)
+/*@AutoConfigureWireMock(port = 5995)*/
 @SpringBootTest(
         classes = Application.class,
         properties = "spring.main.allow-bean-definition-overriding=true"
@@ -34,5 +37,4 @@ public abstract class LlfSpringTest {
             throw new UncheckedIOException(e);
         }
     }
-
 }

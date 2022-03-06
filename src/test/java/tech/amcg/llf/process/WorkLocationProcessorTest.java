@@ -7,13 +7,9 @@ import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.junit4.SpringRunner;
-import tech.amcg.llf.Application;
 import tech.amcg.llf.config.LlfSpringTest;
 import tech.amcg.llf.domain.exception.LlfException;
 import tech.amcg.llf.domain.query.Person;
@@ -27,7 +23,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 
 public class WorkLocationProcessorTest extends LlfSpringTest {
 

@@ -22,7 +22,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Import(LocalTestConfiguration.class)
 @ActiveProfiles(resolver = TestProfileResolver.class)
-/*@AutoConfigureWireMock(port = 5995)*/
 @SpringBootTest(
         classes = Application.class,
         properties = "spring.main.allow-bean-definition-overriding=true"

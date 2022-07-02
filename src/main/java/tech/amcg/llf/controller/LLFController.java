@@ -3,6 +3,7 @@ package tech.amcg.llf.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +19,7 @@ import tech.amcg.llf.service.LlfService;
 import java.util.Arrays;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 class LlfController {
 

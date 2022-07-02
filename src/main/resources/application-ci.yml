@@ -1,0 +1,20 @@
+org:
+  neo4j:
+    driver:
+      uri: ${NEO4J_URI}
+      authentication:
+        username: ${NEO4J_USER}
+        password: ${NEO4J_PASS}
+
+llf:
+  api:
+    here:
+      uri: https://localhost:5599
+      key: 12345
+    transport:
+      uri: http://localhost:5599
+      key: abcde
+
+test:
+  wiremock:
+    port: 5599
